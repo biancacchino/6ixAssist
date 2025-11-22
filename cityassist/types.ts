@@ -4,12 +4,12 @@ export interface Coordinate {
 }
 
 export enum ResourceCategory {
-  FOOD = 'food',
-  SHELTER = 'shelter',
-  LEGAL = 'legal',
-  HEALTH = 'health',
-  COMMUNITY = 'community',
-  CRISIS = 'crisis',
+  FOOD = 'Food',
+  SHELTER = 'Shelter',
+  LEGAL = 'Legal',
+  HEALTH = 'Health',
+  COMMUNITY = 'Community',
+  CRISIS = 'Crisis',
 }
 
 export interface Resource {
