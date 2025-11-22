@@ -261,7 +261,11 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
                   className="flex items-center gap-3"
                 >
                   <div className="w-10 h-10 flex items-center justify-center shadow-sm flex-shrink-0 transition-all duration-300 ease-out overflow-hidden rounded-xl bg-white">
-                    <img src="/logo.png" alt="6ixAssist logo" className="w-8 h-8 object-contain" />
+                    <img
+                      src="/logo.png"
+                      alt="6ixAssist logo"
+                      className="w-8 h-8 object-contain"
+                    />
                   </div>
                   <div className="text-left">
                     <h1
@@ -310,7 +314,11 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
                   className="flex items-center justify-center w-full transition-all duration-200 ease-out hover:opacity-80 active:scale-95"
                 >
                   <div className="w-12 h-12 flex items-center justify-center shadow-sm flex-shrink-0 transition-all duration-300 ease-out overflow-hidden rounded-xl bg-white">
-                    <img src="/logo.png" alt="6ixAssist logo" className="w-10 h-10 object-contain" />
+                    <img
+                      src="/logo.png"
+                      alt="6ixAssist logo"
+                      className="w-10 h-10 object-contain"
+                    />
                   </div>
                 </button>
                 <button
@@ -474,13 +482,17 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
       {/* Help Popup */}
       {showHelpPopup && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className={`rounded-2xl p-6 max-w-md w-full shadow-2xl transition-colors duration-300 ${
-            darkMode ? "bg-gray-800" : "bg-white"
-          }`}>
+          <div
+            className={`rounded-2xl p-6 max-w-md w-full shadow-2xl transition-colors duration-300 ${
+              darkMode ? "bg-gray-800" : "bg-white"
+            }`}
+          >
             <div className="flex items-center justify-between mb-4">
-              <h3 className={`text-xl font-bold transition-colors duration-300 ${
-                darkMode ? "text-gray-100" : "text-gray-900"
-              }`}>
+              <h3
+                className={`text-xl font-bold transition-colors duration-300 ${
+                  darkMode ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
                 Crisis Support
               </h3>
               <button
@@ -491,50 +503,93 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
                     : "hover:bg-gray-100 text-gray-600"
                 }`}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
-            
+
             <div className="space-y-3">
-              <a href="tel:911" className={`block p-4 rounded-xl border-2 transition-all duration-300 ${
-                darkMode
-                  ? "bg-gray-700 border-red-500 hover:bg-gray-600"
-                  : "bg-red-50 border-red-200 hover:bg-red-100"
-              }`}>
-                <div className={`text-2xl font-bold transition-colors duration-300 ${
-                  darkMode ? "text-red-400" : "text-red-600"
-                }`}>911</div>
-                <div className={`text-sm mt-1 transition-colors duration-300 ${
-                  darkMode ? "text-gray-300" : "text-red-700"
-                }`}>Emergency Services</div>
+              <a
+                href="tel:911"
+                className={`block p-4 rounded-xl border-2 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-700 border-red-500 hover:bg-gray-600"
+                    : "bg-red-50 border-red-200 hover:bg-red-100"
+                }`}
+              >
+                <div
+                  className={`text-2xl font-bold transition-colors duration-300 ${
+                    darkMode ? "text-red-400" : "text-red-600"
+                  }`}
+                >
+                  911
+                </div>
+                <div
+                  className={`text-sm mt-1 transition-colors duration-300 ${
+                    darkMode ? "text-gray-300" : "text-red-700"
+                  }`}
+                >
+                  Emergency Services
+                </div>
               </a>
 
-              <a href="tel:988" className={`block p-4 rounded-xl border-2 transition-all duration-300 ${
-                darkMode
-                  ? "bg-gray-700 border-red-500 hover:bg-gray-600"
-                  : "bg-red-50 border-red-200 hover:bg-red-100"
-              }`}>
-                <div className={`text-2xl font-bold transition-colors duration-300 ${
-                  darkMode ? "text-red-400" : "text-red-600"
-                }`}>988</div>
-                <div className={`text-sm mt-1 transition-colors duration-300 ${
-                  darkMode ? "text-gray-300" : "text-red-700"
-                }`}>Suicide Crisis Helpline</div>
+              <a
+                href="tel:988"
+                className={`block p-4 rounded-xl border-2 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-700 border-red-500 hover:bg-gray-600"
+                    : "bg-red-50 border-red-200 hover:bg-red-100"
+                }`}
+              >
+                <div
+                  className={`text-2xl font-bold transition-colors duration-300 ${
+                    darkMode ? "text-red-400" : "text-red-600"
+                  }`}
+                >
+                  988
+                </div>
+                <div
+                  className={`text-sm mt-1 transition-colors duration-300 ${
+                    darkMode ? "text-gray-300" : "text-red-700"
+                  }`}
+                >
+                  Suicide Crisis Helpline
+                </div>
               </a>
 
-              <a href="tel:311" className={`block p-4 rounded-xl border-2 transition-all duration-300 ${
-                darkMode
-                  ? "bg-gray-700 border-indigo-500 hover:bg-gray-600"
-                  : "bg-indigo-50 border-indigo-200 hover:bg-indigo-100"
-              }`}>
-                <div className={`text-2xl font-bold transition-colors duration-300 ${
-                  darkMode ? "text-indigo-400" : "text-indigo-600"
-                }`}>311</div>
-                <div className={`text-sm mt-1 transition-colors duration-300 ${
-                  darkMode ? "text-gray-300" : "text-indigo-700"
-                }`}>City Services & Resources</div>
+              <a
+                href="tel:311"
+                className={`block p-4 rounded-xl border-2 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-700 border-indigo-500 hover:bg-gray-600"
+                    : "bg-indigo-50 border-indigo-200 hover:bg-indigo-100"
+                }`}
+              >
+                <div
+                  className={`text-2xl font-bold transition-colors duration-300 ${
+                    darkMode ? "text-indigo-400" : "text-indigo-600"
+                  }`}
+                >
+                  311
+                </div>
+                <div
+                  className={`text-sm mt-1 transition-colors duration-300 ${
+                    darkMode ? "text-gray-300" : "text-indigo-700"
+                  }`}
+                >
+                  City Services & Resources
+                </div>
               </a>
             </div>
           </div>

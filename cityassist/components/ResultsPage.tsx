@@ -6,7 +6,12 @@ import {
   getQuickAnswer,
   generateFallbackAnswer,
 } from "../services/chatService";
-import { fetchAllLiveResources, searchLiveResources, getNearbyResources, LiveResource } from "../services/torontoDataService";
+import {
+  fetchAllLiveResources,
+  searchLiveResources,
+  getNearbyResources,
+  LiveResource,
+} from "../services/torontoDataService";
 import MapComponent from "./MapComponent";
 import ResourceCard from "./ResourceCard";
 import EmergencyBanner from "./EmergencyBanner";
@@ -46,7 +51,9 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
   const [query, setQuery] = useState<string>(queryParam);
   const [resources, setResources] = useState<Resource[]>([]);
   const [liveResources, setLiveResources] = useState<LiveResource[]>([]);
-  const [summary, setSummary] = useState<string>("Loading live Toronto resources...");
+  const [summary, setSummary] = useState<string>(
+    "Loading live Toronto resources..."
+  );
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [isMobileMapOpen, setIsMobileMapOpen] = useState<boolean>(false);
@@ -71,17 +78,26 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
   const [showEmergencyBanner, setShowEmergencyBanner] = useState(false);
 
   // Convert LiveResource to Resource format
-  const convertLiveResourceToResource = (liveResource: LiveResource): Resource => {
+  const convertLiveResourceToResource = (
+    liveResource: LiveResource
+  ): Resource => {
     // Map live resource types to categories
     const getCategoryFromType = (type: string) => {
       switch (type) {
-        case 'food-bank': return 'Food';
-        case 'shelter': return 'Shelter';
-        case 'health': return 'Health';
-        case 'mental-health': return 'Health';
-        case 'employment': return 'Community';
-        case 'housing': return 'Shelter';
-        default: return 'Community';
+        case "food-bank":
+          return "Food";
+        case "shelter":
+          return "Shelter";
+        case "health":
+          return "Health";
+        case "mental-health":
+          return "Health";
+        case "employment":
+          return "Community";
+        case "housing":
+          return "Shelter";
+        default:
+          return "Community";
       }
     };
 
@@ -89,14 +105,14 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
       id: liveResource.id,
       name: liveResource.name,
       category: getCategoryFromType(liveResource.type),
-      description: liveResource.services.join(', '),
+      description: liveResource.services.join(", "),
       address: liveResource.address,
       lat: liveResource.coordinates[0],
       lng: liveResource.coordinates[1],
       hours: liveResource.hours,
-      phone: liveResource.phone || '',
-      website: liveResource.website || '',
-      source: 'Toronto Live Data'
+      phone: liveResource.phone || "",
+      website: liveResource.website || "",
+      source: "Toronto Live Data",
     };
   };
 
@@ -111,10 +127,10 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
         setResources(convertedResources);
         setSummary(`Showing ${liveData.length} live Toronto resources`);
       } catch (error) {
-        console.error('Error loading live resources:', error);
+        console.error("Error loading live resources:", error);
         // Fallback to static resources
         setResources(STATIC_RESOURCES);
-        setSummary('Showing fallback resources (live data unavailable)');
+        setSummary("Showing fallback resources (live data unavailable)");
       } finally {
         setLoading(false);
       }
@@ -150,12 +166,16 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
       try {
         // First try searching live resources
         const liveResults = await searchLiveResources(undefined, searchQuery);
-        
+
         if (liveResults.length > 0) {
           setLiveResources(liveResults);
-          const convertedResources = liveResults.map(convertLiveResourceToResource);
+          const convertedResources = liveResults.map(
+            convertLiveResourceToResource
+          );
           setResources(convertedResources);
-          setSummary(`Found ${liveResults.length} live resources matching "${searchQuery}"`);
+          setSummary(
+            `Found ${liveResults.length} live resources matching "${searchQuery}"`
+          );
           if (convertedResources.length > 0) {
             setSelectedId(convertedResources[0].id);
           }
@@ -173,9 +193,11 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
           }
         }
       } catch (err) {
-        console.error('Error in live search:', err);
+        console.error("Error in live search:", err);
         // Final fallback
-        setSummary("Sorry, we couldn't process your request right now. Try browsing all resources.");
+        setSummary(
+          "Sorry, we couldn't process your request right now. Try browsing all resources."
+        );
         const allLive = await fetchAllLiveResources();
         const converted = allLive.map(convertLiveResourceToResource);
         setResources(converted);
@@ -246,9 +268,11 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
   };
 
   return (
-    <div className={`h-full w-full flex flex-col md:flex-row overflow-hidden transition-colors duration-300 ${
-      darkMode ? "bg-gray-900" : "bg-white"
-    }`}>
+    <div
+      className={`h-full w-full flex flex-col md:flex-row overflow-hidden transition-colors duration-300 ${
+        darkMode ? "bg-gray-900" : "bg-white"
+      }`}
+    >
       {/* Sidebar / Main Content Area */}
       <div
         className={`flex-1 flex flex-col h-full md:max-w-md lg:max-w-lg shadow-xl z-10 transition-colors duration-300 ${
@@ -256,14 +280,18 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
         } ${isMobileMapOpen ? "hidden md:flex" : "flex"}`}
       >
         {/* Header */}
-        <div className={`p-4 border-b sticky top-0 z-20 transition-colors duration-300 ${
-          darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-        }`}>
+        <div
+          className={`p-4 border-b sticky top-0 z-20 transition-colors duration-300 ${
+            darkMode
+              ? "bg-gray-800 border-gray-700"
+              : "bg-white border-gray-200"
+          }`}
+        >
           <div className="flex items-center gap-3 mb-4">
             <button
               onClick={handleBack}
               className={`p-2 -ml-2 rounded-lg transition-all duration-300 ease-out active:scale-95 ${
-                darkMode 
+                darkMode
                   ? "hover:bg-gray-700 active:bg-gray-600 text-gray-300"
                   : "hover:bg-indigo-50 active:bg-indigo-100 text-gray-600"
               }`}
@@ -286,9 +314,11 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
               <div className="w-7 h-7 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
                 <span className="text-white text-sm font-bold">6</span>
               </div>
-              <h1 className={`text-lg font-semibold transition-colors duration-300 ${
-                darkMode ? "text-gray-100" : "text-gray-800"
-              }`}>
+              <h1
+                className={`text-lg font-semibold transition-colors duration-300 ${
+                  darkMode ? "text-gray-100" : "text-gray-800"
+                }`}
+              >
                 Resources Near You
               </h1>
             </div>
@@ -373,9 +403,11 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
         </div>
 
         {/* Results List */}
-        <div className={`flex-1 overflow-y-auto p-4 custom-scrollbar transition-colors duration-300 ${
-          darkMode ? "bg-gray-800" : "bg-white"
-        }`}>
+        <div
+          className={`flex-1 overflow-y-auto p-4 custom-scrollbar transition-colors duration-300 ${
+            darkMode ? "bg-gray-800" : "bg-white"
+          }`}
+        >
           {/* Emergency Banner */}
           {showEmergencyBanner && <EmergencyBanner />}
 
@@ -392,11 +424,13 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
 
           {/* AI Summary */}
           {summary && (
-            <div className={`mb-6 p-4 rounded-xl border animate-fade-in transition-colors duration-300 ${
-              darkMode
-                ? "bg-gradient-to-r from-gray-800 to-gray-700 border-gray-600"
-                : "bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100"
-            }`}>
+            <div
+              className={`mb-6 p-4 rounded-xl border animate-fade-in transition-colors duration-300 ${
+                darkMode
+                  ? "bg-gradient-to-r from-gray-800 to-gray-700 border-gray-600"
+                  : "bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100"
+              }`}
+            >
               <div className="flex items-start gap-3">
                 <div className="mt-1 shrink-0">
                   <svg
@@ -416,14 +450,18 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
                   </svg>
                 </div>
                 <div>
-                  <h4 className={`text-sm font-bold mb-1 transition-colors duration-300 ${
-                    darkMode ? "text-gray-200" : "text-blue-900"
-                  }`}>
+                  <h4
+                    className={`text-sm font-bold mb-1 transition-colors duration-300 ${
+                      darkMode ? "text-gray-200" : "text-blue-900"
+                    }`}
+                  >
                     6ixAssist AI
                   </h4>
-                  <p className={`text-sm leading-relaxed transition-colors duration-300 ${
-                    darkMode ? "text-gray-300" : "text-blue-800"
-                  }`}>
+                  <p
+                    className={`text-sm leading-relaxed transition-colors duration-300 ${
+                      darkMode ? "text-gray-300" : "text-blue-800"
+                    }`}
+                  >
                     {summary}
                   </p>
                 </div>
@@ -433,9 +471,11 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
 
           {/* List */}
           {resources.length === 0 ? (
-            <div className={`text-center py-12 transition-colors duration-300 ${
-              darkMode ? "text-gray-500" : "text-slate-400"
-            }`}>
+            <div
+              className={`text-center py-12 transition-colors duration-300 ${
+                darkMode ? "text-gray-500" : "text-slate-400"
+              }`}
+            >
               <p>No resources found.</p>
             </div>
           ) : (
@@ -469,9 +509,7 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
           <button
             onClick={() => setIsMobileMapOpen(false)}
             className={`p-3 rounded-full shadow-lg transition-colors duration-300 ${
-              darkMode
-                ? "bg-gray-800 text-gray-200"
-                : "bg-white text-slate-700"
+              darkMode ? "bg-gray-800 text-gray-200" : "bg-white text-slate-700"
             }`}
           >
             <svg
@@ -492,15 +530,21 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
       </div>
 
       {/* Mobile Bottom Nav */}
-      <div className={`md:hidden fixed bottom-0 left-0 right-0 border-t flex justify-around p-3 z-30 pb-safe transition-colors duration-300 ${
-        darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
-      }`}>
+      <div
+        className={`md:hidden fixed bottom-0 left-0 right-0 border-t flex justify-around p-3 z-30 pb-safe transition-colors duration-300 ${
+          darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        }`}
+      >
         <button
           onClick={() => setIsMobileMapOpen(false)}
           className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors duration-300 ${
-            !isMobileMapOpen 
-              ? darkMode ? "text-indigo-400" : "text-blue-600"
-              : darkMode ? "text-gray-500" : "text-slate-400"
+            !isMobileMapOpen
+              ? darkMode
+                ? "text-indigo-400"
+                : "text-blue-600"
+              : darkMode
+              ? "text-gray-500"
+              : "text-slate-400"
           }`}
         >
           <svg
@@ -521,9 +565,13 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
         <button
           onClick={() => setIsMobileMapOpen(true)}
           className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors duration-300 ${
-            isMobileMapOpen 
-              ? darkMode ? "text-indigo-400" : "text-blue-600"
-              : darkMode ? "text-gray-500" : "text-slate-400"
+            isMobileMapOpen
+              ? darkMode
+                ? "text-indigo-400"
+                : "text-blue-600"
+              : darkMode
+              ? "text-gray-500"
+              : "text-slate-400"
           }`}
         >
           <svg

@@ -54,6 +54,22 @@ const InfoHelpPage: React.FC = () => {
       answer: 'No account required! All features are available immediately. Your saved places are stored locally on your device.'
     },
     {
+      question: 'How do I save resources?',
+      answer: 'Click the bookmark icon on any resource card to save it. View all saved items in the Saved page.'
+    },
+    {
+      question: 'Is my location data private?',
+      answer: 'Yes! Your location is only used to show nearby resources. We never store or share your location data.'
+    },
+    {
+      question: 'Can I use 6ixAssist without internet?',
+      answer: 'Limited features work offline. Saved resources remain accessible without internet.'
+    },
+    {
+      question: 'Are all services really free?',
+      answer: 'We prioritize free or low-cost options. Check each resource for specific eligibility requirements.'
+    },
+    {
       question: 'How accurate is the location data?',
       answer: 'We update our resource database regularly and work with local organizations to ensure accuracy. Community updates provide real-time information.'
     },
@@ -357,6 +373,44 @@ const InfoHelpPage: React.FC = () => {
                 </p>
               </div>
             ))}
+
+            {/* Contact Support Section */}
+            <div className={`rounded-2xl p-6 border transition-colors duration-300 ${
+              darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+            }`}>
+              <h3 className={`text-lg font-semibold mb-4 transition-colors duration-300 ${
+                darkMode ? "text-white" : "text-gray-900"
+              }`}>
+                Need More Help?
+              </h3>
+              <p className={`mb-4 transition-colors duration-300 ${
+                darkMode ? "text-gray-300" : "text-gray-700"
+              }`}>
+                Can't find what you're looking for? Get in touch with us or access city services.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="mailto:support@6ixassist.ca"
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 ease-out active:scale-95 ${
+                    darkMode
+                      ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+                      : "bg-indigo-100 hover:bg-indigo-200 text-indigo-700"
+                  }`}
+                >
+                  📧 Email Support
+                </a>
+                <a
+                  href="tel:311"
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 ease-out active:scale-95 ${
+                    darkMode
+                      ? "bg-green-700 hover:bg-green-800 text-white"
+                      : "bg-green-100 hover:bg-green-200 text-green-700"
+                  }`}
+                >
+                  📞 Call 311
+                </a>
+              </div>
+            </div>
           </div>
         )}
       </div>

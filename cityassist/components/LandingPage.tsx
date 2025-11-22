@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import { DarkModeContext } from "../App";
-import { fetchTorontoStats, TorontoOpenDataStats } from "../services/torontoDataService";
 import { Coordinate } from "../types";
 
 interface WeatherData {
@@ -19,7 +18,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
   userLocation,
   neighborhood,
   isLocationLive,
-  locationAccuracy
+  locationAccuracy,
 }) => {
   const [query, setQuery] = useState("");
   const [weather, setWeather] = useState<WeatherData>({
@@ -30,26 +29,11 @@ const LandingPage: React.FC<LandingPageProps> = ({
   const [location, setLocation] = useState("North York Centre");
   const [showPrompts, setShowPrompts] = useState(false);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
-  const [liveStats, setLiveStats] = useState<TorontoOpenDataStats | null>(null);
   const { darkMode, setDarkMode } = useContext(DarkModeContext);
 
   const navigate = (path: string) => {
     window.location.hash = path;
   };
-
-  // Load live Toronto stats
-  useEffect(() => {
-    const loadStats = async () => {
-      try {
-        const stats = await fetchTorontoStats();
-        setLiveStats(stats);
-      } catch (error) {
-        console.error('Error loading Toronto stats:', error);
-      }
-    };
-
-    loadStats();
-  }, []);
 
   // Get dynamic categories based on weather, time, and day
   const getDynamicCategories = () => {
@@ -306,21 +290,25 @@ const LandingPage: React.FC<LandingPageProps> = ({
             Free resources for food, shelter, healthcare, and support. No
             barriers. No judgment.
           </p>
-          
+
           {/* Live Location Status */}
           {isLocationLive && (
             <div className="flex items-center justify-center gap-2 mt-4">
               <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className={`text-sm font-medium ${
-                  darkMode ? "text-green-300" : "text-green-700"
-                }`}>
+                <span
+                  className={`text-sm font-medium ${
+                    darkMode ? "text-green-300" : "text-green-700"
+                  }`}
+                >
                   📍 Live in {neighborhood}
                 </span>
                 {locationAccuracy < 100 && (
-                  <span className={`text-xs ${
-                    darkMode ? "text-green-400" : "text-green-600"
-                  }`}>
+                  <span
+                    className={`text-xs ${
+                      darkMode ? "text-green-400" : "text-green-600"
+                    }`}
+                  >
                     (±{Math.round(locationAccuracy)}m)
                   </span>
                 )}
@@ -432,85 +420,6 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </div>
 
-        {/* Live Toronto Stats */}
-        {liveStats && (
-          <div className="mb-16">
-            <h3
-              className={`text-2xl font-semibold mb-6 text-center ${
-                darkMode ? "text-white" : "text-gray-800"
-              }`}
-            >
-              Live Toronto Resources
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              <div
-                className={`text-center p-4 rounded-xl ${
-                  darkMode
-                    ? "bg-gray-800 border border-gray-700"
-                    : "bg-white border border-indigo-100"
-                }`}
-              >
-                <div className={`text-2xl font-bold ${darkMode ? "text-indigo-400" : "text-indigo-600"}`}>
-                  {liveStats.availableBeds}
-                </div>
-                <div className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-                  Available Beds
-                </div>
-              </div>
-              <div
-                className={`text-center p-4 rounded-xl ${
-                  darkMode
-                    ? "bg-gray-800 border border-gray-700"
-                    : "bg-white border border-indigo-100"
-                }`}
-              >
-                <div className={`text-2xl font-bold ${darkMode ? "text-green-400" : "text-green-600"}`}>
-                  {liveStats.foodBankVisits}
-                </div>
-                <div className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-                  Daily Food Bank Visits
-                </div>
-              </div>
-              <div
-                className={`text-center p-4 rounded-xl ${
-                  darkMode
-                    ? "bg-gray-800 border border-gray-700"
-                    : "bg-white border border-indigo-100"
-                }`}
-              >
-                <div className={`text-2xl font-bold ${
-                  (liveStats.shelterOccupancy / liveStats.shelterCapacity) > 0.9
-                    ? (darkMode ? "text-red-400" : "text-red-600")
-                    : (darkMode ? "text-blue-400" : "text-blue-600")
-                }`}>
-                  {Math.round((liveStats.shelterOccupancy / liveStats.shelterCapacity) * 100)}%
-                </div>
-                <div className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-600"}`}>
-                  Shelter Occupancy
-                </div>
-              </div>
-              {liveStats.weatherAlert && (
-                <div
-                  className={`text-center p-4 rounded-xl ${
-                    darkMode
-                      ? "bg-orange-950 border border-orange-800"
-                      : "bg-orange-50 border border-orange-200"
-                  }`}
-                >
-                  <div className={`text-xs font-medium ${darkMode ? "text-orange-300" : "text-orange-700"}`}>
-                    ⚠️ {liveStats.weatherAlert}
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="text-center mt-2">
-              <span className={`text-xs ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                Updated: {new Date(liveStats.lastUpdated).toLocaleTimeString()}
-              </span>
-            </div>
-          </div>
-        )}
-
         {/* Emergency Banner - Centered */}
         <div
           className={`rounded-2xl p-8 border-2 max-w-2xl mx-auto ${
@@ -566,13 +475,17 @@ const LandingPage: React.FC<LandingPageProps> = ({
       {/* Emergency Help Popup */}
       {showHelpPopup && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className={`rounded-2xl p-6 max-w-md w-full transition-colors duration-300 ${
-            darkMode ? "bg-gray-800" : "bg-white"
-          }`}>
+          <div
+            className={`rounded-2xl p-6 max-w-md w-full transition-colors duration-300 ${
+              darkMode ? "bg-gray-800" : "bg-white"
+            }`}
+          >
             <div className="flex justify-between items-start mb-4">
-              <h3 className={`text-xl font-bold transition-colors duration-300 ${
-                darkMode ? "text-gray-100" : "text-gray-900"
-              }`}>
+              <h3
+                className={`text-xl font-bold transition-colors duration-300 ${
+                  darkMode ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
                 🚨 Emergency Help
               </h3>
               <button
@@ -581,12 +494,22 @@ const LandingPage: React.FC<LandingPageProps> = ({
                   darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
                 }`}
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
-            
+
             <div className="space-y-3">
               <a
                 href="tel:911"
@@ -595,21 +518,25 @@ const LandingPage: React.FC<LandingPageProps> = ({
                 <div className="text-2xl font-bold text-red-600">911</div>
                 <div className="text-sm text-red-700">Emergency Services</div>
               </a>
-              
+
               <a
                 href="tel:988"
                 className="block p-4 bg-gradient-to-r from-red-50 to-rose-50 border-2 border-red-300 rounded-xl hover:border-red-400 transition-all duration-300 active:scale-95"
               >
                 <div className="text-2xl font-bold text-red-600">988</div>
-                <div className="text-sm text-red-700">Suicide Crisis Helpline</div>
+                <div className="text-sm text-red-700">
+                  Suicide Crisis Helpline
+                </div>
               </a>
-              
+
               <a
                 href="tel:311"
                 className="block p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-300 rounded-xl hover:border-indigo-400 transition-all duration-300 active:scale-95"
               >
                 <div className="text-2xl font-bold text-indigo-600">311</div>
-                <div className="text-sm text-indigo-700">City Services & Info</div>
+                <div className="text-sm text-indigo-700">
+                  City Services & Info
+                </div>
               </a>
             </div>
 
