@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Resource, Coordinate, AIResponse } from "../types";
 import { STATIC_RESOURCES } from "../constants";
 import { searchResourcesWithGemini } from "../services/geminiService";
@@ -10,12 +10,14 @@ import MapComponent from "./MapComponent";
 import ResourceCard from "./ResourceCard";
 import EmergencyBanner from "./EmergencyBanner";
 import ChatAnswer from "./ChatAnswer";
+import { DarkModeContext } from "../App";
 
 interface ResultsPageProps {
   userLocation: Coordinate;
 }
 
 const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
+  const { darkMode } = useContext(DarkModeContext);
   // Manual query parsing from hash
   const getQueryFromHash = () => {
     const hash = window.location.hash;
@@ -136,19 +138,27 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col md:flex-row bg-white overflow-hidden">
+    <div className={`h-full w-full flex flex-col md:flex-row overflow-hidden transition-colors duration-300 ${
+      darkMode ? "bg-gray-900" : "bg-white"
+    }`}>
       {/* Sidebar / Main Content Area */}
       <div
-        className={`flex-1 flex flex-col h-full md:max-w-md lg:max-w-lg bg-white shadow-xl z-10 ${
-          isMobileMapOpen ? "hidden md:flex" : "flex"
-        }`}
+        className={`flex-1 flex flex-col h-full md:max-w-md lg:max-w-lg shadow-xl z-10 transition-colors duration-300 ${
+          darkMode ? "bg-gray-800" : "bg-white"
+        } ${isMobileMapOpen ? "hidden md:flex" : "flex"}`}
       >
         {/* Header */}
-        <div className="p-4 bg-white border-b sticky top-0 z-20">
+        <div className={`p-4 border-b sticky top-0 z-20 transition-colors duration-300 ${
+          darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        }`}>
           <div className="flex items-center gap-3 mb-4">
             <button
               onClick={handleBack}
-              className="p-2 -ml-2 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg text-gray-600 transition-all duration-200 ease-out active:scale-95"
+              className={`p-2 -ml-2 rounded-lg transition-all duration-300 ease-out active:scale-95 ${
+                darkMode 
+                  ? "hover:bg-gray-700 active:bg-gray-600 text-gray-300"
+                  : "hover:bg-indigo-50 active:bg-indigo-100 text-gray-600"
+              }`}
             >
               <svg
                 className="w-6 h-6"
@@ -168,7 +178,9 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
               <div className="w-7 h-7 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
                 <span className="text-white text-sm font-bold">6</span>
               </div>
-              <h1 className="text-lg font-semibold text-gray-800">
+              <h1 className={`text-lg font-semibold transition-colors duration-300 ${
+                darkMode ? "text-gray-100" : "text-gray-800"
+              }`}>
                 Resources Near You
               </h1>
             </div>
@@ -180,12 +192,20 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search for help..."
-              className="w-full pl-4 pr-12 py-3 rounded-xl border-2 border-indigo-200 bg-white focus:border-indigo-500 outline-none transition-all duration-300 text-base"
+              className={`w-full pl-4 pr-12 py-3 rounded-xl border-2 outline-none transition-all duration-300 text-base ${
+                darkMode
+                  ? "border-gray-600 bg-gray-700 text-gray-100 placeholder-gray-400 focus:border-indigo-400"
+                  : "border-indigo-200 bg-white text-gray-900 focus:border-indigo-500"
+              }`}
             />
             <button
               type="submit"
               disabled={loading}
-              className="absolute right-2 top-2 bottom-2 bg-indigo-500 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 flex items-center justify-center transition-all duration-200 ease-out disabled:opacity-50 hover:shadow-md active:scale-95"
+              className={`absolute right-2 top-2 bottom-2 text-white rounded-lg px-4 flex items-center justify-center transition-all duration-300 ease-out disabled:opacity-50 hover:shadow-md active:scale-95 ${
+                darkMode
+                  ? "bg-gray-700 hover:bg-gray-600 active:bg-gray-500"
+                  : "bg-indigo-500 hover:bg-indigo-700 active:bg-indigo-800"
+              }`}
             >
               {loading ? (
                 <svg
@@ -232,7 +252,11 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
               <button
                 key={cat}
                 onClick={() => handleChipClick(cat)}
-                className="whitespace-nowrap px-4 py-2 rounded-full bg-indigo-50 text-indigo-800 text-sm font-medium hover:bg-indigo-100 active:bg-indigo-200 transition-all duration-200 ease-out border border-indigo-200 active:scale-95"
+                className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ease-out border active:scale-95 ${
+                  darkMode
+                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600 active:bg-gray-500 border-gray-600"
+                    : "bg-indigo-50 text-indigo-800 hover:bg-indigo-100 active:bg-indigo-200 border-indigo-200"
+                }`}
               >
                 {cat}
               </button>
@@ -241,7 +265,9 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
         </div>
 
         {/* Results List */}
-        <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+        <div className={`flex-1 overflow-y-auto p-4 custom-scrollbar transition-colors duration-300 ${
+          darkMode ? "bg-gray-800" : "bg-white"
+        }`}>
           {/* Emergency Banner */}
           {showEmergencyBanner && <EmergencyBanner />}
 
@@ -258,11 +284,17 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
 
           {/* AI Summary */}
           {summary && (
-            <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100 animate-fade-in">
+            <div className={`mb-6 p-4 rounded-xl border animate-fade-in transition-colors duration-300 ${
+              darkMode
+                ? "bg-gradient-to-r from-gray-800 to-gray-700 border-gray-600"
+                : "bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100"
+            }`}>
               <div className="flex items-start gap-3">
                 <div className="mt-1 shrink-0">
                   <svg
-                    className="w-5 h-5 text-blue-600"
+                    className={`w-5 h-5 transition-colors duration-300 ${
+                      darkMode ? "text-blue-400" : "text-blue-600"
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -276,10 +308,14 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-blue-900 mb-1">
+                  <h4 className={`text-sm font-bold mb-1 transition-colors duration-300 ${
+                    darkMode ? "text-gray-200" : "text-blue-900"
+                  }`}>
                     CityAssist AI
                   </h4>
-                  <p className="text-sm text-blue-800 leading-relaxed">
+                  <p className={`text-sm leading-relaxed transition-colors duration-300 ${
+                    darkMode ? "text-gray-300" : "text-blue-800"
+                  }`}>
                     {summary}
                   </p>
                 </div>
@@ -289,7 +325,9 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
 
           {/* List */}
           {resources.length === 0 ? (
-            <div className="text-center py-12 text-slate-400">
+            <div className={`text-center py-12 transition-colors duration-300 ${
+              darkMode ? "text-gray-500" : "text-slate-400"
+            }`}>
               <p>No resources found.</p>
             </div>
           ) : (
@@ -322,7 +360,11 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
         <div className="md:hidden absolute top-4 left-4 z-[1000]">
           <button
             onClick={() => setIsMobileMapOpen(false)}
-            className="bg-white p-3 rounded-full shadow-lg text-slate-700"
+            className={`p-3 rounded-full shadow-lg transition-colors duration-300 ${
+              darkMode
+                ? "bg-gray-800 text-gray-200"
+                : "bg-white text-slate-700"
+            }`}
           >
             <svg
               className="w-6 h-6"
@@ -342,11 +384,15 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
       </div>
 
       {/* Mobile Bottom Nav */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around p-3 z-30 pb-safe">
+      <div className={`md:hidden fixed bottom-0 left-0 right-0 border-t flex justify-around p-3 z-30 pb-safe transition-colors duration-300 ${
+        darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+      }`}>
         <button
           onClick={() => setIsMobileMapOpen(false)}
-          className={`flex flex-col items-center gap-1 text-xs font-medium ${
-            !isMobileMapOpen ? "text-blue-600" : "text-slate-400"
+          className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors duration-300 ${
+            !isMobileMapOpen 
+              ? darkMode ? "text-indigo-400" : "text-blue-600"
+              : darkMode ? "text-gray-500" : "text-slate-400"
           }`}
         >
           <svg
@@ -366,8 +412,10 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
         </button>
         <button
           onClick={() => setIsMobileMapOpen(true)}
-          className={`flex flex-col items-center gap-1 text-xs font-medium ${
-            isMobileMapOpen ? "text-blue-600" : "text-slate-400"
+          className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors duration-300 ${
+            isMobileMapOpen 
+              ? darkMode ? "text-indigo-400" : "text-blue-600"
+              : darkMode ? "text-gray-500" : "text-slate-400"
           }`}
         >
           <svg

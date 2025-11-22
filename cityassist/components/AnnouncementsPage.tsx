@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   fetchTorontoNews,
   NewsAnnouncement,
 } from "../services/torontoDataService";
+import { DarkModeContext } from "../App";
 
 const AnnouncementsPage: React.FC = () => {
+  const { darkMode } = useContext(DarkModeContext);
   const [filter, setFilter] = useState<"all" | "active">("active");
   const [announcements, setAnnouncements] = useState<NewsAnnouncement[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,17 +27,32 @@ const AnnouncementsPage: React.FC = () => {
   }, []);
 
   const getTypeColor = (type: NewsAnnouncement["type"]) => {
-    switch (type) {
-      case "urgent":
-        return "bg-rose-100 text-rose-700 border-rose-200";
-      case "update":
-        return "bg-blue-100 text-blue-700 border-blue-200";
-      case "new-resource":
-        return "bg-green-100 text-green-700 border-green-200";
-      case "policy":
-        return "bg-purple-100 text-purple-700 border-purple-200";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
+    if (darkMode) {
+      switch (type) {
+        case "urgent":
+          return "bg-rose-900 text-rose-300 border-rose-800";
+        case "update":
+          return "bg-blue-900 text-blue-300 border-blue-800";
+        case "new-resource":
+          return "bg-green-900 text-green-300 border-green-800";
+        case "policy":
+          return "bg-purple-900 text-purple-300 border-purple-800";
+        default:
+          return "bg-gray-700 text-gray-300 border-gray-600";
+      }
+    } else {
+      switch (type) {
+        case "urgent":
+          return "bg-rose-100 text-rose-700 border-rose-200";
+        case "update":
+          return "bg-blue-100 text-blue-700 border-blue-200";
+        case "new-resource":
+          return "bg-green-100 text-green-700 border-green-200";
+        case "policy":
+          return "bg-purple-100 text-purple-700 border-purple-200";
+        default:
+          return "bg-gray-100 text-gray-700 border-gray-200";
+      }
     }
   };
 
@@ -129,9 +146,13 @@ const AnnouncementsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="h-full overflow-y-auto bg-gray-50">
+      <div className={`h-full overflow-y-auto transition-colors duration-300 ${
+        darkMode ? "bg-gray-900" : "bg-gray-50"
+      }`}>
         <div className="max-w-4xl mx-auto p-6 flex items-center justify-center min-h-screen">
-          <div className="animate-pulse text-indigo-600 font-medium">
+          <div className={`animate-pulse font-medium transition-colors duration-300 ${
+            darkMode ? "text-indigo-400" : "text-indigo-600"
+          }`}>
             Loading announcements...
           </div>
         </div>
@@ -140,13 +161,21 @@ const AnnouncementsPage: React.FC = () => {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-50">
+    <div className={`h-full overflow-y-auto transition-colors duration-300 ${
+      darkMode ? "bg-gray-900" : "bg-gray-50"
+    }`}>
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-6">
+      <div className={`p-6 border-b transition-colors duration-300 ${
+        darkMode 
+          ? "bg-gray-800 border-gray-700" 
+          : "bg-white border-gray-200"
+      }`}>
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-2">
             <svg
-              className="w-8 h-8 text-indigo-600"
+              className={`w-8 h-8 transition-colors duration-300 ${
+                darkMode ? "text-indigo-400" : "text-indigo-600"
+              }`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -158,9 +187,13 @@ const AnnouncementsPage: React.FC = () => {
                 d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
               />
             </svg>
-            <h1 className="text-3xl font-bold text-gray-900">Announcements</h1>
+            <h1 className={`text-3xl font-bold transition-colors duration-300 ${
+              darkMode ? "text-white" : "text-gray-900"
+            }`}>Announcements</h1>
           </div>
-          <p className="text-gray-600">
+          <p className={`transition-colors duration-300 ${
+            darkMode ? "text-gray-300" : "text-gray-600"
+          }`}>
             Stay updated on important changes, new resources, and community
             alerts
           </p>
@@ -168,15 +201,23 @@ const AnnouncementsPage: React.FC = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="bg-white border-b border-gray-200">
+      <div className={`border-b transition-colors duration-300 ${
+        darkMode 
+          ? "bg-gray-800 border-gray-700" 
+          : "bg-white border-gray-200"
+      }`}>
         <div className="max-w-4xl mx-auto px-6">
           <div className="flex gap-6">
             <button
               onClick={() => setFilter("active")}
-              className={`py-4 px-2 border-b-2 font-medium transition-all duration-200 ease-out ${
+              className={`py-4 px-2 border-b-2 font-medium transition-all duration-300 ease-out ${
                 filter === "active"
-                  ? "border-indigo-500 text-indigo-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300"
+                  ? darkMode 
+                    ? "border-indigo-400 text-indigo-400" 
+                    : "border-indigo-500 text-indigo-600"
+                  : darkMode
+                    ? "border-transparent text-gray-400 hover:text-white hover:border-gray-500"
+                    : "border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300"
               }`}
             >
               Active (
@@ -189,10 +230,14 @@ const AnnouncementsPage: React.FC = () => {
             </button>
             <button
               onClick={() => setFilter("all")}
-              className={`py-4 px-2 border-b-2 font-medium transition-all duration-200 ease-out ${
+              className={`py-4 px-2 border-b-2 font-medium transition-all duration-300 ease-out ${
                 filter === "all"
-                  ? "border-indigo-500 text-indigo-600"
-                  : "border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300"
+                  ? darkMode 
+                    ? "border-indigo-400 text-indigo-400" 
+                    : "border-indigo-500 text-indigo-600"
+                  : darkMode
+                    ? "border-transparent text-gray-400 hover:text-white hover:border-gray-500"
+                    : "border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300"
               }`}
             >
               All ({announcements.length})
@@ -206,7 +251,9 @@ const AnnouncementsPage: React.FC = () => {
         {filteredAnnouncements.length === 0 ? (
           <div className="text-center py-12">
             <svg
-              className="w-16 h-16 text-gray-400 mx-auto mb-4"
+              className={`w-16 h-16 mx-auto mb-4 transition-colors duration-300 ${
+                darkMode ? "text-gray-500" : "text-gray-400"
+              }`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -218,17 +265,25 @@ const AnnouncementsPage: React.FC = () => {
                 d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
               />
             </svg>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">
+            <h3 className={`text-lg font-medium mb-1 transition-colors duration-300 ${
+              darkMode ? "text-white" : "text-gray-900"
+            }`}>
               No announcements
             </h3>
-            <p className="text-gray-600">Check back later for updates</p>
+            <p className={`transition-colors duration-300 ${
+              darkMode ? "text-gray-400" : "text-gray-600"
+            }`}>Check back later for updates</p>
           </div>
         ) : (
           <div className="space-y-4">
             {filteredAnnouncements.map((announcement) => (
               <div
                 key={announcement.id}
-                className="bg-white rounded-2xl border-2 border-gray-200 hover:border-indigo-300 p-6 transition-all duration-200 ease-out hover:shadow-md"
+                className={`rounded-2xl border-2 p-6 transition-all duration-300 ease-out hover:shadow-md ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700 hover:border-indigo-500"
+                    : "bg-white border-gray-200 hover:border-indigo-300"
+                }`}
               >
                 <div className="flex items-start gap-4">
                   <div
@@ -241,10 +296,14 @@ const AnnouncementsPage: React.FC = () => {
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-2">
                       <div>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                        <h3 className={`text-xl font-semibold mb-1 transition-colors duration-300 ${
+                          darkMode ? "text-white" : "text-gray-900"
+                        }`}>
                           {announcement.title}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className={`text-sm transition-colors duration-300 ${
+                          darkMode ? "text-gray-400" : "text-gray-500"
+                        }`}>
                           {formatDate(announcement.date)}
                         </p>
                       </div>
@@ -256,11 +315,15 @@ const AnnouncementsPage: React.FC = () => {
                         {announcement.type.replace("-", " ")}
                       </span>
                     </div>
-                    <p className="text-gray-700 leading-relaxed">
+                    <p className={`leading-relaxed transition-colors duration-300 ${
+                      darkMode ? "text-gray-300" : "text-gray-700"
+                    }`}>
                       {announcement.message}
                     </p>
                     {announcement.source && (
-                      <p className="text-xs text-gray-500 mt-2">
+                      <p className={`text-xs mt-2 transition-colors duration-300 ${
+                        darkMode ? "text-gray-500" : "text-gray-500"
+                      }`}>
                         Source: {announcement.source}
                       </p>
                     )}
@@ -274,10 +337,16 @@ const AnnouncementsPage: React.FC = () => {
 
       {/* Info Section */}
       <div className="max-w-4xl mx-auto px-6 pb-6">
-        <div className="bg-indigo-50 rounded-xl border border-indigo-200 p-6">
+        <div className={`rounded-xl border p-6 transition-colors duration-300 ${
+          darkMode
+            ? "bg-gray-800 border-gray-600"
+            : "bg-indigo-50 border-indigo-200"
+        }`}>
           <div className="flex items-start gap-3">
             <svg
-              className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1"
+              className={`w-6 h-6 flex-shrink-0 mt-1 transition-colors duration-300 ${
+                darkMode ? "text-indigo-400" : "text-indigo-600"
+              }`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -290,10 +359,14 @@ const AnnouncementsPage: React.FC = () => {
               />
             </svg>
             <div>
-              <h4 className="font-semibold text-indigo-900 mb-1">
+              <h4 className={`font-semibold mb-1 transition-colors duration-300 ${
+                darkMode ? "text-white" : "text-indigo-900"
+              }`}>
                 Stay Informed
               </h4>
-              <p className="text-sm text-indigo-800">
+              <p className={`text-sm transition-colors duration-300 ${
+                darkMode ? "text-gray-300" : "text-indigo-800"
+              }`}>
                 Important announcements are also displayed in the banner at the
                 top of the page. Enable notifications in Settings to get alerts
                 for urgent updates.

@@ -15,6 +15,7 @@ const LandingPage: React.FC = () => {
   const [lowDataMode, setLowDataMode] = useState(false);
   const [location, setLocation] = useState("North York Centre");
   const [showPrompts, setShowPrompts] = useState(false);
+  const [showHelpPopup, setShowHelpPopup] = useState(false);
   const { darkMode, setDarkMode } = useContext(DarkModeContext);
 
   const navigate = (path: string) => {
@@ -424,14 +425,74 @@ const LandingPage: React.FC = () => {
               If you're in crisis or need emergency assistance right now.
             </p>
             <button
-              onClick={handleCrisisClick}
-              className="px-8 py-3 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white rounded-xl font-medium transition-all duration-200 ease-out hover:shadow-md active:scale-95"
+              onClick={() => setShowHelpPopup(true)}
+              className="px-8 py-3 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white rounded-xl font-medium transition-all duration-300 ease-out hover:shadow-md active:scale-95"
             >
-              Find emergency resources
+              Get Help Now
             </button>
           </div>
         </div>
       </div>
+
+      {/* Emergency Help Popup */}
+      {showHelpPopup && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className={`rounded-2xl p-6 max-w-md w-full transition-colors duration-300 ${
+            darkMode ? "bg-gray-800" : "bg-white"
+          }`}>
+            <div className="flex justify-between items-start mb-4">
+              <h3 className={`text-xl font-bold transition-colors duration-300 ${
+                darkMode ? "text-gray-100" : "text-gray-900"
+              }`}>
+                🚨 Emergency Help
+              </h3>
+              <button
+                onClick={() => setShowHelpPopup(false)}
+                className={`p-1 rounded-lg transition-all duration-300 ${
+                  darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
+                }`}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              <a
+                href="tel:911"
+                className="block p-4 bg-gradient-to-r from-red-50 to-rose-50 border-2 border-red-300 rounded-xl hover:border-red-400 transition-all duration-300 active:scale-95"
+              >
+                <div className="text-2xl font-bold text-red-600">911</div>
+                <div className="text-sm text-red-700">Emergency Services</div>
+              </a>
+              
+              <a
+                href="tel:988"
+                className="block p-4 bg-gradient-to-r from-red-50 to-rose-50 border-2 border-red-300 rounded-xl hover:border-red-400 transition-all duration-300 active:scale-95"
+              >
+                <div className="text-2xl font-bold text-red-600">988</div>
+                <div className="text-sm text-red-700">Suicide Crisis Helpline</div>
+              </a>
+              
+              <a
+                href="tel:311"
+                className="block p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-300 rounded-xl hover:border-indigo-400 transition-all duration-300 active:scale-95"
+              >
+                <div className="text-2xl font-bold text-indigo-600">311</div>
+                <div className="text-sm text-indigo-700">City Services & Info</div>
+              </a>
+            </div>
+
+            <button
+              onClick={handleCrisisClick}
+              className="w-full mt-4 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition-all duration-300 active:scale-95"
+            >
+              Find More Resources
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

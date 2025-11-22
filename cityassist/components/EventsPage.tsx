@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { DarkModeContext } from '../App';
 
 interface Event {
   id: number;
@@ -11,6 +12,7 @@ interface Event {
 }
 
 const EventsPage: React.FC = () => {
+  const { darkMode } = useContext(DarkModeContext);
   const [activeTab, setActiveTab] = useState<'today' | 'week' | 'upcoming'>('today');
 
   const events: Event[] = [
@@ -89,17 +91,32 @@ const EventsPage: React.FC = () => {
   ];
 
   const getCategoryColor = (category: Event['category']) => {
-    switch (category) {
-      case 'food':
-        return 'bg-green-100 text-green-700 border-green-200';
-      case 'products':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'services':
-        return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'health':
-        return 'bg-rose-100 text-rose-700 border-rose-200';
-      default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+    if (darkMode) {
+      switch (category) {
+        case 'food':
+          return 'bg-green-900 text-green-300 border-green-800';
+        case 'products':
+          return 'bg-blue-900 text-blue-300 border-blue-800';
+        case 'services':
+          return 'bg-purple-900 text-purple-300 border-purple-800';
+        case 'health':
+          return 'bg-rose-900 text-rose-300 border-rose-800';
+        default:
+          return 'bg-gray-700 text-gray-300 border-gray-600';
+      }
+    } else {
+      switch (category) {
+        case 'food':
+          return 'bg-green-100 text-green-700 border-green-200';
+        case 'products':
+          return 'bg-blue-100 text-blue-700 border-blue-200';
+        case 'services':
+          return 'bg-purple-100 text-purple-700 border-purple-200';
+        case 'health':
+          return 'bg-rose-100 text-rose-700 border-rose-200';
+        default:
+          return 'bg-gray-100 text-gray-700 border-gray-200';
+      }
     }
   };
 
@@ -151,45 +168,61 @@ const EventsPage: React.FC = () => {
   const filteredEvents = filterEvents(events);
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-50">
+    <div className={`h-full overflow-y-auto transition-colors duration-300 ${
+      darkMode ? "bg-gray-900" : "bg-gray-50"
+    }`}>
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-6">
+      <div className={`border-b p-6 transition-colors duration-300 ${
+        darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+      }`}>
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Community Events</h1>
-          <p className="text-gray-600">Free resources, services, and support happening near you</p>
+          <h1 className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
+            darkMode ? "text-gray-100" : "text-gray-900"
+          }`}>Community Events</h1>
+          <p className={`transition-colors duration-300 ${
+            darkMode ? "text-gray-400" : "text-gray-600"
+          }`}>Free resources, services, and support happening near you</p>
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="bg-white border-b border-gray-200">
+      <div className={`border-b transition-colors duration-300 ${
+        darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+      }`}>
         <div className="max-w-4xl mx-auto px-6">
           <div className="flex gap-6">
             <button
               onClick={() => setActiveTab('today')}
-              className={`py-4 px-2 border-b-2 font-medium transition-all duration-200 ease-out ${
+              className={`py-4 px-2 border-b-2 font-medium transition-all duration-300 ease-out ${
                 activeTab === 'today'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                  ? 'border-indigo-500 text-indigo-400'
+                  : darkMode 
+                    ? 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
               }`}
             >
               Today
             </button>
             <button
               onClick={() => setActiveTab('week')}
-              className={`py-4 px-2 border-b-2 font-medium transition-all duration-200 ease-out ${
+              className={`py-4 px-2 border-b-2 font-medium transition-all duration-300 ease-out ${
                 activeTab === 'week'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                  ? 'border-indigo-500 text-indigo-400'
+                  : darkMode 
+                    ? 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
               }`}
             >
               This Week
             </button>
             <button
               onClick={() => setActiveTab('upcoming')}
-              className={`py-4 px-2 border-b-2 font-medium transition-all duration-200 ease-out ${
+              className={`py-4 px-2 border-b-2 font-medium transition-all duration-300 ease-out ${
                 activeTab === 'upcoming'
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
+                  ? 'border-indigo-500 text-indigo-400'
+                  : darkMode 
+                    ? 'border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
               }`}
             >
               Upcoming
@@ -202,18 +235,28 @@ const EventsPage: React.FC = () => {
       <div className="max-w-4xl mx-auto p-6">
         {filteredEvents.length === 0 ? (
           <div className="text-center py-12">
-            <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className={`w-16 h-16 mx-auto mb-4 transition-colors duration-300 ${
+              darkMode ? "text-gray-600" : "text-gray-400"
+            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">No events scheduled</h3>
-            <p className="text-gray-600">Check back later for upcoming events</p>
+            <h3 className={`text-lg font-medium mb-1 transition-colors duration-300 ${
+              darkMode ? "text-gray-200" : "text-gray-900"
+            }`}>No events scheduled</h3>
+            <p className={`transition-colors duration-300 ${
+              darkMode ? "text-gray-400" : "text-gray-600"
+            }`}>Check back later for upcoming events</p>
           </div>
         ) : (
           <div className="space-y-4">
             {filteredEvents.map(event => (
               <div
                 key={event.id}
-                className="bg-white rounded-2xl border-2 border-gray-200 p-6 hover:border-indigo-300 hover:shadow-md transition-all duration-200 ease-out"
+                className={`rounded-2xl border-2 p-6 transition-all duration-300 ease-out ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700 hover:border-indigo-500 hover:shadow-xl"
+                    : "bg-white border-gray-200 hover:border-indigo-300 hover:shadow-md"
+                }`}
               >
                 <div className="flex items-start gap-4">
                   <div className={`p-3 rounded-xl border ${getCategoryColor(event.category)}`}>
@@ -221,29 +264,41 @@ const EventsPage: React.FC = () => {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-xl font-semibold text-gray-900">{event.title}</h3>
+                      <h3 className={`text-xl font-semibold transition-colors duration-300 ${
+                        darkMode ? "text-white" : "text-gray-900"
+                      }`}>{event.title}</h3>
                       <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getCategoryColor(event.category)}`}>
                         {event.category}
                       </span>
                     </div>
                     <div className="space-y-2 mb-3">
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className={`flex items-center gap-2 transition-colors duration-300 ${
+                        darkMode ? "text-gray-300" : "text-gray-600"
+                      }`}>
+                        <svg className={`w-5 h-5 transition-colors duration-300 ${
+                          darkMode ? "text-gray-400" : "text-gray-400"
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span className="text-sm">
                           <span className="font-medium">{event.date}</span> • {event.time}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className={`flex items-center gap-2 transition-colors duration-300 ${
+                        darkMode ? "text-gray-300" : "text-gray-600"
+                      }`}>
+                        <svg className={`w-5 h-5 transition-colors duration-300 ${
+                          darkMode ? "text-gray-400" : "text-gray-400"
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                         <span className="text-sm">{event.location}</span>
                       </div>
                     </div>
-                    <p className="text-gray-700 mb-4">{event.description}</p>
+                    <p className={`mb-4 transition-colors duration-300 ${
+                      darkMode ? "text-gray-300" : "text-gray-700"
+                    }`}>{event.description}</p>
                     <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg font-medium transition-all duration-200 ease-out hover:shadow-sm active:scale-95">
                       Get Directions
                     </button>
@@ -257,14 +312,24 @@ const EventsPage: React.FC = () => {
 
       {/* Info Banner */}
       <div className="max-w-4xl mx-auto px-6 pb-6">
-        <div className="bg-indigo-50 rounded-xl border border-indigo-200 p-6">
+        <div className={`rounded-xl border p-6 transition-colors duration-300 ${
+          darkMode
+            ? "bg-gray-800 border-gray-600"
+            : "bg-indigo-50 border-indigo-200"
+        }`}>
           <div className="flex items-start gap-3">
-            <svg className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className={`w-6 h-6 flex-shrink-0 mt-1 transition-colors duration-300 ${
+              darkMode ? "text-indigo-400" : "text-indigo-600"
+            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <div>
-              <h4 className="font-semibold text-indigo-900 mb-1">Know of an event?</h4>
-              <p className="text-sm text-indigo-800">Help others in your community by sharing upcoming free events, giveaways, and services. Contact us or use the Community page to share updates.</p>
+              <h4 className={`font-semibold mb-1 transition-colors duration-300 ${
+                darkMode ? "text-white" : "text-indigo-900"
+              }`}>Know of an event?</h4>
+              <p className={`text-sm transition-colors duration-300 ${
+                darkMode ? "text-gray-300" : "text-indigo-800"
+              }`}>Help others in your community by sharing upcoming free events, giveaways, and services. Contact us or use the Community page to share updates.</p>
             </div>
           </div>
         </div>
