@@ -26,10 +26,12 @@ const MapComponent: React.FC<MapComponentProps> = ({ resources, center, selected
 
     const map = L.map(mapContainerRef.current).setView([center.lat, center.lng], 13);
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains: 'abcd',
-      maxZoom: 20
+    // Use OpenStreetMap tiles that work better offline with browser caching
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+      // Enable offline support through browser cache
+      crossOrigin: true,
     }).addTo(map);
 
     // Custom User Icon

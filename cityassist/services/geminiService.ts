@@ -124,3 +124,44 @@ export const searchResourcesWithGemini = async (
     };
   }
 };
+
+export const explainEligibility = async (resourceName: string, eligibilityText: string): Promise<string> => {
+  try {
+    const systemPrompt = `
+    You are CityAssist, a helpful AI that explains eligibility requirements for community resources in simple, clear language.
+    
+    Break down complex eligibility requirements into easy-to-understand bullet points.
+    Be warm, supportive, and concise.
+    Focus on what people need to know and bring.
+    `;
+
+    const userPrompt = `
+    Resource: ${resourceName}
+    
+    Original eligibility text:
+    ${eligibilityText}
+    
+    Please explain this in simple bullet points starting with "Here's what you need to know:". 
+    Include sections like:
+    • What you need to bring
+    • Who can access this
+    • Hours/timing
+    • Any special notes
+    
+    Keep it friendly and clear.
+    `;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: userPrompt,
+      config: {
+        systemInstruction: systemPrompt,
+      }
+    });
+
+    return response.text || "Eligibility information is being updated. Please contact the resource directly for details.";
+  } catch (error) {
+    console.error("AI Eligibility Error:", error);
+    return eligibilityText; // Fallback to original text
+  }
+};

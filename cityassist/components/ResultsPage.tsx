@@ -101,7 +101,7 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col md:flex-row bg-slate-50 overflow-hidden">
+    <div className="h-full w-full flex flex-col md:flex-row bg-white overflow-hidden">
         
       {/* Sidebar / Main Content Area */}
       <div className={`flex-1 flex flex-col h-full md:max-w-md lg:max-w-lg bg-white shadow-xl z-10 ${isMobileMapOpen ? 'hidden md:flex' : 'flex'}`}>
@@ -109,10 +109,15 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
         {/* Header */}
         <div className="p-4 bg-white border-b sticky top-0 z-20">
           <div className="flex items-center gap-3 mb-4">
-            <button onClick={handleBack} className="p-2 -ml-2 hover:bg-slate-100 rounded-lg text-slate-500 transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            <button onClick={handleBack} className="p-2 -ml-2 hover:bg-indigo-50 active:bg-indigo-100 rounded-lg text-gray-600 transition-all duration-200 ease-out active:scale-95">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             </button>
-            <h1 className="text-xl font-bold text-slate-900">Results</h1>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
+                <span className="text-white text-sm font-bold">6</span>
+              </div>
+              <h1 className="text-lg font-semibold text-gray-800">Resources Near You</h1>
+            </div>
           </div>
 
           <form onSubmit={handleSearchSubmit} className="relative">
@@ -120,13 +125,13 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Refine search..."
-              className="w-full pl-4 pr-12 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+              placeholder="Search for help..."
+              className="w-full pl-4 pr-12 py-3 rounded-xl border-2 border-indigo-200 bg-white focus:border-indigo-500 outline-none transition-all duration-300 text-base"
             />
             <button 
               type="submit"
               disabled={loading}
-              className="absolute right-2 top-2 bottom-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-3 flex items-center justify-center transition-colors disabled:opacity-50"
+              className="absolute right-2 top-2 bottom-2 bg-indigo-500 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 flex items-center justify-center transition-all duration-200 ease-out disabled:opacity-50 hover:shadow-md active:scale-95"
             >
               {loading ? (
                 <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -145,7 +150,7 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
               <button 
                 key={cat}
                 onClick={() => handleChipClick(cat)}
-                className="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-sm font-medium hover:bg-blue-50 hover:text-blue-600 transition-colors border border-transparent hover:border-blue-200"
+                className="whitespace-nowrap px-4 py-2 rounded-full bg-indigo-50 text-indigo-800 text-sm font-medium hover:bg-indigo-100 active:bg-indigo-200 transition-all duration-200 ease-out border border-indigo-200 active:scale-95"
               >
                 {cat}
               </button>
