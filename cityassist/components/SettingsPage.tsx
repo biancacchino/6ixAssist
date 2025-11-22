@@ -372,64 +372,116 @@ const SettingsPage: React.FC = () => {
                 darkMode ? "text-gray-100" : "text-gray-800"
               }`}
             >
-              <svg className="w-5 h-5 text-indigo-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-5 h-5 text-indigo-700"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               Help & Support
             </h3>
 
             <div className="space-y-4">
               <div>
-                <h4 className={`text-sm font-semibold mb-3 transition-colors duration-300 ${
-                  darkMode ? "text-gray-200" : "text-gray-800"
-                }`}>
+                <h4
+                  className={`text-sm font-semibold mb-3 transition-colors duration-300 ${
+                    darkMode ? "text-gray-200" : "text-gray-800"
+                  }`}
+                >
                   Frequently Asked Questions
                 </h4>
                 <div className="space-y-2">
-                  <details className={`group ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                  <details
+                    className={`group ${
+                      darkMode ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
                     <summary className="cursor-pointer font-medium text-sm py-2">
                       How do I save resources?
                     </summary>
-                    <p className={`text-sm mt-1 pl-4 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                      Click the bookmark icon on any resource card to save it. View all saved items in the Saved page.
+                    <p
+                      className={`text-sm mt-1 pl-4 ${
+                        darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
+                      Click the bookmark icon on any resource card to save it.
+                      View all saved items in the Saved page.
                     </p>
                   </details>
-                  
-                  <details className={`group ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+
+                  <details
+                    className={`group ${
+                      darkMode ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
                     <summary className="cursor-pointer font-medium text-sm py-2">
                       Is my location data private?
                     </summary>
-                    <p className={`text-sm mt-1 pl-4 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                      Yes! Your location is only used to show nearby resources. We never store or share your location data.
+                    <p
+                      className={`text-sm mt-1 pl-4 ${
+                        darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
+                      Yes! Your location is only used to show nearby resources.
+                      We never store or share your location data.
                     </p>
                   </details>
-                  
-                  <details className={`group ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+
+                  <details
+                    className={`group ${
+                      darkMode ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
                     <summary className="cursor-pointer font-medium text-sm py-2">
                       Can I use 6ixAssist without internet?
                     </summary>
-                    <p className={`text-sm mt-1 pl-4 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                      Limited features work offline. Saved resources remain accessible without internet.
+                    <p
+                      className={`text-sm mt-1 pl-4 ${
+                        darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
+                      Limited features work offline. Saved resources remain
+                      accessible without internet.
                     </p>
                   </details>
-                  
-                  <details className={`group ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+
+                  <details
+                    className={`group ${
+                      darkMode ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
                     <summary className="cursor-pointer font-medium text-sm py-2">
                       Are all services really free?
                     </summary>
-                    <p className={`text-sm mt-1 pl-4 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
-                      We prioritize free or low-cost options. Check each resource for specific eligibility requirements.
+                    <p
+                      className={`text-sm mt-1 pl-4 ${
+                        darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
+                      We prioritize free or low-cost options. Check each
+                      resource for specific eligibility requirements.
                     </p>
                   </details>
                 </div>
               </div>
 
-              <div className={`border-t pt-4 transition-colors duration-300 ${
-                darkMode ? "border-gray-700" : "border-gray-100"
-              }`}>
-                <h4 className={`text-sm font-semibold mb-2 transition-colors duration-300 ${
-                  darkMode ? "text-gray-200" : "text-gray-800"
-                }`}>
+              <div
+                className={`border-t pt-4 transition-colors duration-300 ${
+                  darkMode ? "border-gray-700" : "border-gray-100"
+                }`}
+              >
+                <h4
+                  className={`text-sm font-semibold mb-2 transition-colors duration-300 ${
+                    darkMode ? "text-gray-200" : "text-gray-800"
+                  }`}
+                >
                   Need More Help?
                 </h4>
                 <div className="flex flex-wrap gap-2 mt-3">

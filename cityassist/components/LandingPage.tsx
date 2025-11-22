@@ -437,13 +437,17 @@ const LandingPage: React.FC = () => {
       {/* Emergency Help Popup */}
       {showHelpPopup && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className={`rounded-2xl p-6 max-w-md w-full transition-colors duration-300 ${
-            darkMode ? "bg-gray-800" : "bg-white"
-          }`}>
+          <div
+            className={`rounded-2xl p-6 max-w-md w-full transition-colors duration-300 ${
+              darkMode ? "bg-gray-800" : "bg-white"
+            }`}
+          >
             <div className="flex justify-between items-start mb-4">
-              <h3 className={`text-xl font-bold transition-colors duration-300 ${
-                darkMode ? "text-gray-100" : "text-gray-900"
-              }`}>
+              <h3
+                className={`text-xl font-bold transition-colors duration-300 ${
+                  darkMode ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
                 🚨 Emergency Help
               </h3>
               <button
@@ -452,12 +456,22 @@ const LandingPage: React.FC = () => {
                   darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
                 }`}
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
-            
+
             <div className="space-y-3">
               <a
                 href="tel:911"
@@ -466,21 +480,25 @@ const LandingPage: React.FC = () => {
                 <div className="text-2xl font-bold text-red-600">911</div>
                 <div className="text-sm text-red-700">Emergency Services</div>
               </a>
-              
+
               <a
                 href="tel:988"
                 className="block p-4 bg-gradient-to-r from-red-50 to-rose-50 border-2 border-red-300 rounded-xl hover:border-red-400 transition-all duration-300 active:scale-95"
               >
                 <div className="text-2xl font-bold text-red-600">988</div>
-                <div className="text-sm text-red-700">Suicide Crisis Helpline</div>
+                <div className="text-sm text-red-700">
+                  Suicide Crisis Helpline
+                </div>
               </a>
-              
+
               <a
                 href="tel:311"
                 className="block p-4 bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-300 rounded-xl hover:border-indigo-400 transition-all duration-300 active:scale-95"
               >
                 <div className="text-2xl font-bold text-indigo-600">311</div>
-                <div className="text-sm text-indigo-700">City Services & Info</div>
+                <div className="text-sm text-indigo-700">
+                  City Services & Info
+                </div>
               </a>
             </div>
 

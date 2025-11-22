@@ -108,21 +108,27 @@ const SavedPage: React.FC = () => {
   };
 
   return (
-    <div className={`flex flex-col h-full overflow-y-auto transition-colors duration-300 ${
-      darkMode 
-        ? "bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900" 
-        : "bg-gradient-to-b from-indigo-50 via-white to-purple-50"
-    }`}>
+    <div
+      className={`flex flex-col h-full overflow-y-auto transition-colors duration-300 ${
+        darkMode
+          ? "bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900"
+          : "bg-gradient-to-b from-indigo-50 via-white to-purple-50"
+      }`}
+    >
       <div className="w-full max-w-3xl mx-auto px-6 py-8">
         <div className="mb-6">
-          <h2 className={`text-3xl font-semibold mb-2 transition-colors duration-300 ${
-            darkMode ? "text-gray-100" : "text-gray-800"
-          }`}>
+          <h2
+            className={`text-3xl font-semibold mb-2 transition-colors duration-300 ${
+              darkMode ? "text-gray-100" : "text-gray-800"
+            }`}
+          >
             Your Saved Places
           </h2>
-          <p className={`transition-colors duration-300 ${
-            darkMode ? "text-gray-400" : "text-gray-600"
-          }`}>
+          <p
+            className={`transition-colors duration-300 ${
+              darkMode ? "text-gray-400" : "text-gray-600"
+            }`}
+          >
             Quick access to the resources you use most
           </p>
         </div>
@@ -141,25 +147,35 @@ const SavedPage: React.FC = () => {
                 <div className="flex items-start gap-4">
                   {getCategoryIcon(resource.category)}
                   <div className="flex-1">
-                    <h3 className={`text-lg font-semibold mb-1 transition-colors duration-300 ${
-                      darkMode ? "text-gray-100" : "text-gray-800"
-                    }`}>
+                    <h3
+                      className={`text-lg font-semibold mb-1 transition-colors duration-300 ${
+                        darkMode ? "text-gray-100" : "text-gray-800"
+                      }`}
+                    >
                       {resource.name}
                     </h3>
-                    <p className={`text-sm mb-2 transition-colors duration-300 ${
-                      darkMode ? "text-indigo-400" : "text-gray-600"
-                    }`}>
+                    <p
+                      className={`text-sm mb-2 transition-colors duration-300 ${
+                        darkMode ? "text-indigo-400" : "text-gray-600"
+                      }`}
+                    >
                       {resource.category}
                     </p>
-                    <p className={`text-sm mb-2 transition-colors duration-300 ${
-                      darkMode ? "text-gray-400" : "text-gray-500"
-                    }`}>
+                    <p
+                      className={`text-sm mb-2 transition-colors duration-300 ${
+                        darkMode ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
                       {resource.address}
                     </p>
                     {resource.hours && (
-                      <p className={`text-xs transition-colors duration-300 ${
-                        darkMode ? "text-gray-500" : "text-gray-500"
-                      }`}>{resource.hours}</p>
+                      <p
+                        className={`text-xs transition-colors duration-300 ${
+                          darkMode ? "text-gray-500" : "text-gray-500"
+                        }`}
+                      >
+                        {resource.hours}
+                      </p>
                     )}
                   </div>
                   <button
@@ -183,9 +199,11 @@ const SavedPage: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-16">
-            <div className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center transition-colors duration-300 ${
-              darkMode ? "bg-gray-700" : "bg-gray-100"
-            }`}>
+            <div
+              className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                darkMode ? "bg-gray-700" : "bg-gray-100"
+              }`}
+            >
               <svg
                 className={`w-10 h-10 transition-colors duration-300 ${
                   darkMode ? "text-gray-400" : "text-gray-400"
@@ -202,14 +220,18 @@ const SavedPage: React.FC = () => {
                 />
               </svg>
             </div>
-            <h2 className={`text-2xl font-semibold mb-3 transition-colors duration-300 ${
-              darkMode ? "text-gray-200" : "text-gray-800"
-            }`}>
+            <h2
+              className={`text-2xl font-semibold mb-3 transition-colors duration-300 ${
+                darkMode ? "text-gray-200" : "text-gray-800"
+              }`}
+            >
               No saved places yet
             </h2>
-            <p className={`mb-6 transition-colors duration-300 ${
-              darkMode ? "text-gray-400" : "text-gray-600"
-            }`}>
+            <p
+              className={`mb-6 transition-colors duration-300 ${
+                darkMode ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
               Save places you visit often for quick access
             </p>
             <button

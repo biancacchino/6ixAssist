@@ -25,9 +25,9 @@ const App: React.FC = () => {
   const [currentPath, setCurrentPath] = useState(() => {
     // Always start at home page
     const hash = window.location.hash;
-    if (!hash || hash === '#' || hash === '#/') {
-      window.location.hash = '';
-      return '';
+    if (!hash || hash === "#" || hash === "#/") {
+      window.location.hash = "";
+      return "";
     }
     return hash;
   });
@@ -130,13 +130,17 @@ const App: React.FC = () => {
         {/* Location Permission Popup */}
         {showLocationPrompt && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6">
-            <div className={`rounded-3xl p-8 max-w-md w-full transition-colors duration-300 ${
-              darkMode ? "bg-gray-800" : "bg-white"
-            }`}>
+            <div
+              className={`rounded-3xl p-8 max-w-md w-full transition-colors duration-300 ${
+                darkMode ? "bg-gray-800" : "bg-white"
+              }`}
+            >
               <div className="text-center">
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                  darkMode ? "bg-indigo-900" : "bg-indigo-100"
-                }`}>
+                <div
+                  className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                    darkMode ? "bg-indigo-900" : "bg-indigo-100"
+                  }`}
+                >
                   <svg
                     className={`w-8 h-8 transition-colors duration-300 ${
                       darkMode ? "text-indigo-300" : "text-indigo-600"
@@ -159,14 +163,18 @@ const App: React.FC = () => {
                     />
                   </svg>
                 </div>
-                <h2 className={`text-2xl font-semibold mb-3 transition-colors duration-300 ${
-                  darkMode ? "text-gray-100" : "text-gray-900"
-                }`}>
+                <h2
+                  className={`text-2xl font-semibold mb-3 transition-colors duration-300 ${
+                    darkMode ? "text-gray-100" : "text-gray-900"
+                  }`}
+                >
                   Enable your location?
                 </h2>
-                <p className={`mb-6 transition-colors duration-300 ${
-                  darkMode ? "text-gray-400" : "text-gray-600"
-                }`}>
+                <p
+                  className={`mb-6 transition-colors duration-300 ${
+                    darkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
                   We'll show you resources near you. This helps you find help
                   faster.
                 </p>
@@ -180,7 +188,7 @@ const App: React.FC = () => {
                   <button
                     onClick={handleSkipLocation}
                     className={`w-full py-4 rounded-xl font-medium transition-all duration-300 ease-out active:scale-95 ${
-                      darkMode 
+                      darkMode
                         ? "bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-gray-200"
                         : "bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-700"
                     }`}
