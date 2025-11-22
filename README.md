@@ -1,9 +1,8 @@
 # 6ixAssist 🍁
 
 A comprehensive resource finder designed to help Toronto residents locate essential services quickly and reliably. Whether you need food, shelter, health services, or legal aid, 6ixAssist connects you with verified local resources through an intuitive map-based interface.
-
-**DevPost**
-* __[Devpost Submission](https://devpost.com/software/6ixassist?ref_content=my-projects-tab&ref_feature=my_projects)__
+- __[Devpost](https://devpost.com/software/6ixassist?ref_content=my-projects-tab&ref_feature=my_projects)__
+- __[Vercel](6ixassist.vercel.app)__
 
 ## 🌟 Overview
 
@@ -147,14 +146,6 @@ npm run build
 * Toronto Open Data for providing accessible community resources data
 * All the community organizations working tirelessly to support Toronto residents
 * Our mentors who provided guidance throughout development
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
