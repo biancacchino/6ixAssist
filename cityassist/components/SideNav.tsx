@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface SideNavProps {
   currentPath: string;
@@ -11,9 +11,11 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
   // Update body margin when collapsed state changes
   React.useEffect(() => {
     const updateMargin = () => {
-      const mainContent = document.querySelector('.main-content-area') as HTMLElement;
+      const mainContent = document.querySelector(
+        ".main-content-area"
+      ) as HTMLElement;
       if (mainContent && window.innerWidth >= 768) {
-        mainContent.style.marginLeft = isCollapsed ? '5rem' : '16rem';
+        mainContent.style.marginLeft = isCollapsed ? "5rem" : "16rem";
       }
     };
     updateMargin();
@@ -33,48 +35,166 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
   };
 
   const navItems = [
-    { 
-      name: 'Home', 
-      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>,
-      path: '/' 
+    {
+      name: "Home",
+      icon: (
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+          />
+        </svg>
+      ),
+      path: "/",
     },
-    { 
-      name: 'Find Resources', 
-      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>,
-      path: '/map' 
+    {
+      name: "Find Resources",
+      icon: (
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+          />
+        </svg>
+      ),
+      path: "/map",
     },
-    { 
-      name: 'Events', 
-      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>,
-      path: '/events' 
+    {
+      name: "Events",
+      icon: (
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+      ),
+      path: "/events",
     },
-    { 
-      name: 'Announcements', 
-      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>,
-      path: '/announcements' 
+    {
+      name: "Announcements",
+      icon: (
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+          />
+        </svg>
+      ),
+      path: "/announcements",
     },
-    { 
-      name: 'Community', 
-      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" /></svg>,
-      path: '/community' 
+    {
+      name: "Community",
+      icon: (
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
+          />
+        </svg>
+      ),
+      path: "/community",
     },
-    { 
-      name: 'Saved Places', 
-      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>,
-      path: '/saved' 
+    {
+      name: "Saved Places",
+      icon: (
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+          />
+        </svg>
+      ),
+      path: "/saved",
     },
   ];
 
   const extraItems = [
-    { 
-      name: 'Settings', 
-      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>,
-      action: () => navigate('/settings')
+    {
+      name: "Settings",
+      icon: (
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+        </svg>
+      ),
+      action: () => navigate("/settings"),
     },
-    { 
-      name: 'Help & Support', 
-      icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-      action: () => alert('Help coming soon!') 
+    {
+      name: "Help & Support",
+      icon: (
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      ),
+      action: () => alert("Help coming soon!"),
     },
   ];
 
@@ -85,8 +205,18 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
         onClick={() => setIsOpen(!isOpen)}
         className="fixed top-4 left-4 z-50 md:hidden p-2 bg-white rounded-xl shadow-lg border-2 border-indigo-200 hover:bg-indigo-50 active:bg-indigo-100 transition-all duration-200 ease-out active:scale-95"
       >
-        <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        <svg
+          className="w-6 h-6 text-gray-700"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
         </svg>
       </button>
 
@@ -101,23 +231,27 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
       {/* Side Navigation */}
       <nav
         className={`fixed top-0 left-0 h-full bg-white border-r-2 border-indigo-200 shadow-xl z-40 transition-all duration-300 ease-out ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 ${isCollapsed ? 'w-20' : 'w-64'}`}
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 ${isCollapsed ? "w-20" : "w-64"}`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="p-6 border-b border-indigo-100">
             {!isCollapsed ? (
               <div className="flex items-center justify-between">
-                <button 
-                  onClick={() => navigate('/')}
+                <button
+                  onClick={() => navigate("/")}
                   className="flex items-center gap-3 transition-all duration-200 ease-out hover:opacity-80 active:scale-95"
                 >
                   <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0 transition-all duration-300 ease-out">
-                    <span className="text-white font-bold text-xl transition-all duration-300 ease-out">6</span>
+                    <span className="text-white font-bold text-xl transition-all duration-300 ease-out">
+                      6
+                    </span>
                   </div>
                   <div className="text-left">
-                    <h1 className="text-xl font-semibold text-gray-800">6ixAssist</h1>
+                    <h1 className="text-xl font-semibold text-gray-800">
+                      6ixAssist
+                    </h1>
                     <p className="text-xs text-gray-500">Find help near you</p>
                   </div>
                 </button>
@@ -125,27 +259,49 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
                   onClick={() => setIsCollapsed(!isCollapsed)}
                   className="hidden md:block p-2 hover:bg-indigo-50 rounded-lg transition-colors flex-shrink-0"
                 >
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                    />
                   </svg>
                 </button>
               </div>
             ) : (
               <div>
-                <button 
-                  onClick={() => navigate('/')}
+                <button
+                  onClick={() => navigate("/")}
                   className="flex items-center justify-center w-full transition-all duration-200 ease-out hover:opacity-80 active:scale-95"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0 transition-all duration-300 ease-out">
-                    <span className="text-white font-bold text-2xl transition-all duration-300 ease-out">6</span>
+                    <span className="text-white font-bold text-2xl transition-all duration-300 ease-out">
+                      6
+                    </span>
                   </div>
                 </button>
                 <button
                   onClick={() => setIsCollapsed(!isCollapsed)}
                   className="hidden md:block w-full mt-3 p-2 hover:bg-indigo-50 rounded-lg transition-colors"
                 >
-                  <svg className="w-5 h-5 text-gray-600 mx-auto rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                  <svg
+                    className="w-5 h-5 text-gray-600 mx-auto rotate-180"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                    />
                   </svg>
                 </button>
               </div>
@@ -159,14 +315,22 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
                 <button
                   key={item.path}
                   onClick={() => navigate(item.path)}
-                  className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-4 py-3 rounded-xl font-medium transition-all duration-200 ease-out active:scale-95 ${
+                  className={`w-full flex items-center ${
+                    isCollapsed ? "justify-center" : "gap-3"
+                  } px-4 py-3 rounded-xl font-medium transition-all duration-200 ease-out active:scale-95 ${
                     isActive(item.path)
-                      ? 'bg-indigo-100 text-indigo-700 shadow-sm'
-                      : 'text-gray-600 hover:bg-indigo-50 hover:text-gray-800'
+                      ? "bg-indigo-100 text-indigo-700 shadow-sm"
+                      : "text-gray-600 hover:bg-indigo-50 hover:text-gray-800"
                   }`}
                   title={isCollapsed ? item.name : undefined}
                 >
-                  <span className={isActive(item.path) ? 'text-indigo-600' : 'text-gray-500'}>{item.icon}</span>
+                  <span
+                    className={
+                      isActive(item.path) ? "text-indigo-600" : "text-gray-500"
+                    }
+                  >
+                    {item.icon}
+                  </span>
                   {!isCollapsed && <span>{item.name}</span>}
                 </button>
               ))}
@@ -183,7 +347,9 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
                 <button
                   key={item.name}
                   onClick={item.action}
-                  className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-indigo-50 hover:text-gray-800 transition-all duration-200 ease-out active:scale-95`}
+                  className={`w-full flex items-center ${
+                    isCollapsed ? "justify-center" : "gap-3"
+                  } px-4 py-3 rounded-xl font-medium text-gray-600 hover:bg-indigo-50 hover:text-gray-800 transition-all duration-200 ease-out active:scale-95`}
                   title={isCollapsed ? item.name : undefined}
                 >
                   <span className="text-gray-500">{item.icon}</span>
@@ -198,14 +364,28 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
             <div className="p-6 border-t border-indigo-100">
               <div className="bg-rose-50 rounded-xl p-4 border border-rose-200">
                 <div className="flex items-center gap-2 mb-2">
-                  <svg className="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  <svg
+                    className="w-5 h-5 text-rose-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
                   </svg>
-                  <p className="text-xs font-semibold text-rose-900">Need urgent help?</p>
+                  <p className="text-xs font-semibold text-rose-900">
+                    Need urgent help?
+                  </p>
                 </div>
-                <p className="text-xs text-rose-700 mb-2">Crisis support available 24/7</p>
+                <p className="text-xs text-rose-700 mb-2">
+                  Crisis support available 24/7
+                </p>
                 <button
-                  onClick={() => navigate('/map?q=emergency crisis help')}
+                  onClick={() => navigate("/map?q=emergency crisis help")}
                   className="w-full py-2 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white rounded-lg text-sm font-medium transition-all duration-200 ease-out hover:shadow-md active:scale-95"
                 >
                   Get Help Now
