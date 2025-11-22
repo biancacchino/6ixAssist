@@ -8,6 +8,7 @@ interface SideNavProps {
 const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [showHelpPopup, setShowHelpPopup] = useState(false);
   const { darkMode } = useContext(DarkModeContext);
 
   // Update body margin when collapsed state changes
@@ -196,7 +197,7 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
           />
         </svg>
       ),
-      action: () => alert("Help coming soon!"),
+      action: () => navigate("/help"),
     },
   ];
 
@@ -458,7 +459,7 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
                   Crisis support available 24/7
                 </p>
                 <button
-                  onClick={() => navigate("/map?q=emergency crisis help")}
+                  onClick={() => setShowHelpPopup(true)}
                   className="w-full py-2 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white rounded-lg text-sm font-medium transition-all duration-300 ease-out hover:shadow-md active:scale-95"
                 >
                   Get Help Now
@@ -468,6 +469,76 @@ const SideNav: React.FC<SideNavProps> = ({ currentPath }) => {
           )}
         </div>
       </nav>
+
+      {/* Help Popup */}
+      {showHelpPopup && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className={`rounded-2xl p-6 max-w-md w-full shadow-2xl transition-colors duration-300 ${
+            darkMode ? "bg-gray-800" : "bg-white"
+          }`}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className={`text-xl font-bold transition-colors duration-300 ${
+                darkMode ? "text-gray-100" : "text-gray-900"
+              }`}>
+                Crisis Support
+              </h3>
+              <button
+                onClick={() => setShowHelpPopup(false)}
+                className={`p-2 rounded-lg transition-all duration-300 ${
+                  darkMode
+                    ? "hover:bg-gray-700 text-gray-400"
+                    : "hover:bg-gray-100 text-gray-600"
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              <a href="tel:911" className={`block p-4 rounded-xl border-2 transition-all duration-300 ${
+                darkMode
+                  ? "bg-gray-700 border-red-500 hover:bg-gray-600"
+                  : "bg-red-50 border-red-200 hover:bg-red-100"
+              }`}>
+                <div className={`text-2xl font-bold transition-colors duration-300 ${
+                  darkMode ? "text-red-400" : "text-red-600"
+                }`}>911</div>
+                <div className={`text-sm mt-1 transition-colors duration-300 ${
+                  darkMode ? "text-gray-300" : "text-red-700"
+                }`}>Emergency Services</div>
+              </a>
+
+              <a href="tel:988" className={`block p-4 rounded-xl border-2 transition-all duration-300 ${
+                darkMode
+                  ? "bg-gray-700 border-red-500 hover:bg-gray-600"
+                  : "bg-red-50 border-red-200 hover:bg-red-100"
+              }`}>
+                <div className={`text-2xl font-bold transition-colors duration-300 ${
+                  darkMode ? "text-red-400" : "text-red-600"
+                }`}>988</div>
+                <div className={`text-sm mt-1 transition-colors duration-300 ${
+                  darkMode ? "text-gray-300" : "text-red-700"
+                }`}>Suicide Crisis Helpline</div>
+              </a>
+
+              <a href="tel:311" className={`block p-4 rounded-xl border-2 transition-all duration-300 ${
+                darkMode
+                  ? "bg-gray-700 border-indigo-500 hover:bg-gray-600"
+                  : "bg-indigo-50 border-indigo-200 hover:bg-indigo-100"
+              }`}>
+                <div className={`text-2xl font-bold transition-colors duration-300 ${
+                  darkMode ? "text-indigo-400" : "text-indigo-600"
+                }`}>311</div>
+                <div className={`text-sm mt-1 transition-colors duration-300 ${
+                  darkMode ? "text-gray-300" : "text-indigo-700"
+                }`}>City Services & Resources</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
