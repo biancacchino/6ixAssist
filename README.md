@@ -69,8 +69,8 @@ Many Toronto residents face challenges accessing critical services due to:
 
 ```bash
 # Clone the repository
-git clone https://github.com/LoriB14/ellehacks.git
-cd ellehacks
+git clone https://github.com/LoriB14/6ixassist.git
+cd cityassist
 
 # Install dependencies
 npm install
