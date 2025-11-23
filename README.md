@@ -56,8 +56,6 @@ Many Toronto residents face challenges accessing critical services due to:
 * Toronto Open Data
 * Curated Static Resources
 
-**Deployment:**
-* [Add deployment platform if applicable]
 
 ## 🚀 Getting Started
 
