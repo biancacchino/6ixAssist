@@ -1,5 +1,7 @@
 # 6ixAssist 🍁
 
+1st place @ Vibe the Code ElleHacks 2025!
+
 A comprehensive resource finder designed to help Toronto residents locate essential services quickly and reliably. Whether you need food, shelter, health services, or legal aid, 6ixAssist connects you with verified local resources through an intuitive map-based interface.
 - __[Devpost](https://devpost.com/software/6ixassist?ref_content=my-projects-tab&ref_feature=my_projects)__
 - __[Vercel](6ixassist.vercel.app)__
