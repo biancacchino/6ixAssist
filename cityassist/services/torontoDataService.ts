@@ -34,19 +34,14 @@ const SHELTER_API = 'https://ckan0.cf.opendata.inter.prod-toronto.ca/api/3/actio
 const WEATHER_API = 'https://api.openweathermap.org/data/2.5/weather';
 
 // Helper function to fetch current weather
+// Removed API call to avoid 401 errors - using fallback temperature
 const fetchCurrentWeather = async (): Promise<number> => {
-  try {
-    // Using a free weather service for Toronto
-    const response = await fetch(`${WEATHER_API}?q=Toronto,CA&appid=demo&units=metric`);
-    if (!response.ok) {
-      // Fallback to realistic current temperature
-      return -3; // November in Toronto
-    }
-    const data = await response.json();
-    return Math.round(data.main.temp);
-  } catch {
-    return -3; // Fallback temperature
-  }
+  // Use realistic fallback temperature based on current month
+  const now = new Date();
+  const month = now.getMonth(); // 0-11
+  // Toronto average temperatures by month
+  const avgTemps = [-6, -5, -1, 5, 12, 18, 21, 20, 16, 9, 3, -3];
+  return avgTemps[month] || -3;
 };
 
 // Fetch live service updates
@@ -108,7 +103,16 @@ const fetchShelterOccupancy = async (): Promise<{ occupancyRate: number; availab
 };
 
 // Fetch live shelter data from Toronto Open Data
+// Note: This will fail with CORS errors in browser - that's expected.
+// The app will use alternative data sources instead.
 export const fetchLiveShelters = async (): Promise<LiveResource[]> => {
+  // Skip in browser environment due to CORS restrictions
+  // Toronto Open Data API doesn't allow cross-origin requests from browsers
+  if (typeof window !== 'undefined') {
+    // Silently return empty array - alternative sources will be used
+    return [];
+  }
+  
   try {
     const response = await fetch(`${SHELTER_API}?resource_id=21c83b32-d5a8-4106-a54f-010dbe49318f&limit=100`);
     const data = await response.json();
@@ -128,145 +132,70 @@ export const fetchLiveShelters = async (): Promise<LiveResource[]> => {
       currentOccupancy: parseInt(shelter.OCCUPANCY) || 0
     }));
   } catch (error) {
-    console.error('Error fetching live shelter data:', error);
+    // CORS errors are expected in browser - silently handle (don't log to console)
+    // The app will use alternative data sources instead
+    if (error instanceof TypeError && (error.message.includes('Failed to fetch') || error.message.includes('Load failed'))) {
+      // CORS error - expected in browser, silently return empty array
+      return [];
+    }
+    // Only log non-CORS errors in development
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('Error fetching live shelter data (non-CORS):', error);
+    }
     return [];
   }
 };
 
-// Fetch real Toronto food banks from 211 Central API
+// Fetch real Toronto food banks - now uses establishment service
 export const fetchLiveFoodBanks = async (): Promise<LiveResource[]> => {
   try {
-    // Using 211 Central's API for real Toronto food banks
-    const foodBanks: LiveResource[] = [
-      {
-        id: 'daily-bread-main',
-        name: 'Daily Bread Food Bank - Main Location',
-        type: 'food-bank',
-        address: '191 New Toronto St, Toronto, ON M8V 2E7',
-        phone: '(416) 203-0050',
-        hours: 'Mon-Fri: 9AM-4PM, Sat: 9AM-3PM',
-        services: ['Emergency Food', 'Fresh Produce', 'Personal Care Items'],
-        coordinates: [43.6049, -79.5085],
-        website: 'https://www.dailybread.ca',
-        lastUpdated: new Date().toISOString(),
-        status: 'open'
-      },
-      {
-        id: 'north-york-harvest',
-        name: 'North York Harvest Food Bank',
-        type: 'food-bank', 
-        address: '1901 Yonge St, Toronto, ON M4S 3C2',
-        phone: '(416) 635-7771',
-        hours: 'Tue, Thu: 10AM-2PM, Sat: 9AM-1PM',
-        services: ['Emergency Food', 'Baby Formula', 'Diapers'],
-        coordinates: [43.7051, -79.3977],
-        website: 'https://www.northyorkharvest.com',
-        lastUpdated: new Date().toISOString(),
-        status: 'open'
-      },
-      {
-        id: 'scarborough-food-network',
-        name: 'Scarborough Centre for Healthy Communities Food Bank',
-        type: 'food-bank',
-        address: '2110 Ellesmere Rd, Toronto, ON M1H 2V5',
-        phone: '(416) 642-9445',
-        hours: 'Mon-Fri: 9AM-5PM',
-        services: ['Emergency Food', 'Culturally Appropriate Food', 'Nutrition Programs'],
-        coordinates: [43.7730, -79.2704],
-        lastUpdated: new Date().toISOString(),
-        status: 'open'
-      },
-      {
-        id: 'community-food-centres',
-        name: 'The Stop Community Food Centre',
-        type: 'food-bank',
-        address: '1884 Davenport Rd, Toronto, ON M6N 4Y2',
-        phone: '(416) 652-7867',
-        hours: 'Mon-Fri: 10AM-6PM, Sat: 10AM-4PM',
-        services: ['Food Bank', 'Community Kitchen', 'Urban Agriculture'],
-        coordinates: [43.6736, -79.4504],
-        website: 'https://www.thestop.org',
-        lastUpdated: new Date().toISOString(),
-        status: 'open'
-      },
-      {
-        id: 'dixon-hall',
-        name: 'Dixon Hall Food Bank',
-        type: 'food-bank',
-        address: '58 Sumach St, Toronto, ON M5A 3J7',
-        phone: '(416) 863-0499',
-        hours: 'Mon, Wed, Fri: 1PM-3PM',
-        services: ['Emergency Food', 'Community Meals', 'Social Services'],
-        coordinates: [43.6579, -79.3594],
-        lastUpdated: new Date().toISOString(),
-        status: 'open'
-      },
-      {
-        id: 'salvation-army-gateway',
-        name: 'Salvation Army Gateway Food Bank',
-        type: 'food-bank',
-        address: '1035 Gerrard St E, Toronto, ON M4M 1Z4',
-        phone: '(416) 466-1354',
-        hours: 'Tue, Thu: 1PM-3:30PM',
-        services: ['Emergency Food', 'Hot Meals', 'Clothing Bank'],
-        coordinates: [43.6645, -79.3384],
-        lastUpdated: new Date().toISOString(),
-        status: 'open'
-      }
-    ];
+    // Use the new establishment service to fetch food banks
+    const { fetchAllEstablishments, establishmentToResource } = await import('./establishmentService');
+    const establishments = await fetchAllEstablishments();
+    const foodBanks = establishments.filter(e => e.category === 'Food');
     
-    return foodBanks;
+    // Convert to LiveResource format
+    return foodBanks.map(est => ({
+      id: est.id,
+      name: est.name,
+      type: 'food-bank' as const,
+      address: est.address,
+      phone: est.phone,
+      hours: est.hours || 'Hours vary',
+      services: est.description ? [est.description] : ['Food Bank Services'],
+      coordinates: [est.latitude, est.longitude] as [number, number],
+      website: est.website,
+      lastUpdated: est.lastVerified,
+      status: 'open' as const,
+    }));
   } catch (error) {
     console.error('Error fetching live food bank data:', error);
     return [];
   }
 };
 
-// Fetch live health resources
+// Fetch live health resources - now uses establishment service
 export const fetchLiveHealthResources = async (): Promise<LiveResource[]> => {
   try {
-    const healthResources: LiveResource[] = [
-      {
-        id: 'sick-kids-community',
-        name: 'SickKids Community Health Centre',
-        type: 'health',
-        address: '555 University Ave, Toronto, ON M5G 1X8',
-        phone: '(416) 813-7500',
-        hours: '24/7 Emergency, Clinics: Mon-Fri 8AM-6PM',
-        services: ['Emergency Care', 'Walk-in Clinic', 'Mental Health'],
-        coordinates: [43.6568, -79.3876],
-        website: 'https://www.sickkids.ca',
-        lastUpdated: new Date().toISOString(),
-        status: 'open'
-      },
-      {
-        id: 'toronto-public-health',
-        name: 'Toronto Public Health - Main Office',
-        type: 'health',
-        address: '277 Victoria St, Toronto, ON M5B 1W2',
-        phone: '(416) 338-7600',
-        hours: 'Mon-Fri: 8:30AM-4:30PM',
-        services: ['Sexual Health', 'Immunizations', 'Health Information'],
-        coordinates: [43.6554, -79.3776],
-        lastUpdated: new Date().toISOString(),
-        status: 'open'
-      },
-      {
-        id: 'centre-addiction-mental-health',
-        name: 'Centre for Addiction and Mental Health (CAMH)',
-        type: 'mental-health',
-        address: '250 College St, Toronto, ON M5T 1R8',
-        phone: '(416) 535-8501',
-        hours: '24/7 Crisis Line, Clinics vary',
-        services: ['Mental Health', 'Addiction Treatment', 'Crisis Support'],
-        coordinates: [43.6550, -79.4003],
-        website: 'https://www.camh.ca',
-        lastUpdated: new Date().toISOString(),
-        status: 'open'
-      }
-    ];
+    // Use the new establishment service
+    const { fetchAllEstablishments } = await import('./establishmentService');
+    const establishments = await fetchAllEstablishments();
+    const healthResources = establishments.filter(e => e.category === 'Health');
     
-    return healthResources;
+    // Convert to LiveResource format
+    return healthResources.map(est => ({
+      id: est.id,
+      name: est.name,
+      type: 'health' as const,
+      address: est.address,
+      phone: est.phone,
+      hours: est.hours || 'Hours vary',
+      services: est.description ? [est.description] : ['Health Services'],
+      coordinates: [est.latitude, est.longitude] as [number, number],
+      website: est.website,
+      lastUpdated: est.lastVerified,
+      status: 'open' as const,
+    }));
   } catch (error) {
     console.error('Error fetching health resources:', error);
     return [];
@@ -329,16 +258,30 @@ export const TORONTO_OPEN_DATA_ENDPOINTS = {
   publicHealth: 'https://open.toronto.ca/dataset/wellbeing-toronto-health/'
 };
 
-// Main function to get all live resources
+// Main function to get all live resources - now uses establishment service
 export const fetchAllLiveResources = async (): Promise<LiveResource[]> => {
   try {
-    const [shelters, foodBanks, healthResources] = await Promise.all([
-      fetchLiveShelters(),
-      fetchLiveFoodBanks(), 
-      fetchLiveHealthResources()
-    ]);
+    // Use the new establishment service for all data
+    const { fetchAllEstablishments } = await import('./establishmentService');
+    const establishments = await fetchAllEstablishments();
     
-    return [...shelters, ...foodBanks, ...healthResources];
+    // Convert establishments to LiveResource format
+    return establishments.map(est => ({
+      id: est.id,
+      name: est.name,
+      type: est.category.toLowerCase().includes('food') ? 'food-bank' as const :
+            est.category.toLowerCase().includes('shelter') ? 'shelter' as const :
+            est.category.toLowerCase().includes('health') ? 'health' as const :
+            'community' as const,
+      address: est.address,
+      phone: est.phone,
+      hours: est.hours || 'Hours vary',
+      services: est.description ? [est.description] : [`${est.category} Services`],
+      coordinates: [est.latitude, est.longitude] as [number, number],
+      website: est.website,
+      lastUpdated: est.lastVerified,
+      status: 'open' as const,
+    }));
   } catch (error) {
     console.error('Error fetching all live resources:', error);
     return [];

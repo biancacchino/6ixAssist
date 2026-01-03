@@ -12,6 +12,7 @@ interface LandingPageProps {
   neighborhood: string;
   isLocationLive: boolean;
   locationAccuracy: number;
+  onLocationUpdate?: (location: Coordinate, neighborhood: string) => void;
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({
@@ -19,6 +20,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
   neighborhood,
   isLocationLive,
   locationAccuracy,
+  onLocationUpdate,
 }) => {
   const [query, setQuery] = useState("");
   const [weather, setWeather] = useState<WeatherData>({
@@ -29,6 +31,9 @@ const LandingPage: React.FC<LandingPageProps> = ({
   const [location, setLocation] = useState("North York Centre");
   const [showPrompts, setShowPrompts] = useState(false);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
+  const [showManualLocation, setShowManualLocation] = useState(false);
+  const [manualLocationInput, setManualLocationInput] = useState("");
+  const [isGeocoding, setIsGeocoding] = useState(false);
   const { darkMode, setDarkMode } = useContext(DarkModeContext);
 
   const navigate = (path: string) => {
@@ -262,6 +267,52 @@ const LandingPage: React.FC<LandingPageProps> = ({
     navigate(`/map?q=${encodeURIComponent(actionQuery)}`);
   };
 
+  const handleManualLocationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!manualLocationInput.trim()) return;
+
+    setIsGeocoding(true);
+    try {
+      const { geocode } = await import("../services/geocodingService");
+      const { getNeighborhood } = await import("../services/locationService");
+      const coordinates = await geocode(manualLocationInput.trim());
+      
+      if (coordinates) {
+        try {
+          const neighborhoodName = await getNeighborhood(coordinates.lat, coordinates.lng);
+          if (onLocationUpdate) {
+            onLocationUpdate(coordinates, neighborhoodName);
+          }
+        } catch (neighborhoodError) {
+          // Still update location even if neighborhood fails
+          console.warn("Could not get neighborhood:", neighborhoodError);
+          if (onLocationUpdate) {
+            onLocationUpdate(coordinates, "Toronto");
+          }
+        }
+        setShowManualLocation(false);
+        setManualLocationInput("");
+      } else {
+        alert(
+          "Could not find that location. Please try:\n" +
+          "• A more specific address (e.g., '123 Main Street')\n" +
+          "• A well-known intersection (e.g., 'Yonge and Dundas')\n" +
+          "• A neighborhood name (e.g., 'Downtown Toronto')"
+        );
+      }
+    } catch (error) {
+      console.error("Error geocoding:", error);
+      alert(
+        "Error finding location. Please check your internet connection and try again.\n\n" +
+        "You can also try:\n" +
+        "• Using the 'Detect Location' button\n" +
+        "• Dropping a pin on the map"
+      );
+    } finally {
+      setIsGeocoding(false);
+    }
+  };
+
   return (
     <div
       className={`flex flex-col h-full overflow-y-auto transition-colors duration-300 ${
@@ -292,7 +343,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
           </p>
 
           {/* Live Location Status */}
-          {isLocationLive && (
+          {isLocationLive ? (
             <div className="flex items-center justify-center gap-2 mt-4">
               <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -313,6 +364,38 @@ const LandingPage: React.FC<LandingPageProps> = ({
                   </span>
                 )}
               </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <button
+                onClick={() => setShowManualLocation(true)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-700 hover:bg-gray-600 text-gray-200"
+                    : "bg-indigo-100 hover:bg-indigo-200 text-indigo-700"
+                }`}
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                Enter your location
+              </button>
             </div>
           )}
         </div>
@@ -546,6 +629,116 @@ const LandingPage: React.FC<LandingPageProps> = ({
             >
               Explore 6ixAssist
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Manual Location Input */}
+      {showManualLocation && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6">
+          <div
+            className={`rounded-3xl p-8 max-w-md w-full transition-colors duration-300 ${
+              darkMode ? "bg-gray-800" : "bg-white"
+            }`}
+          >
+            <div className="text-center mb-6">
+              <h2
+                className={`text-2xl font-semibold mb-3 transition-colors duration-300 ${
+                  darkMode ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
+                Enter your location
+              </h2>
+              <p
+                className={`text-sm transition-colors duration-300 mb-2 ${
+                  darkMode ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
+                Enter an address or intersection
+              </p>
+              <div
+                className={`text-xs space-y-1 mt-3 ${
+                  darkMode ? "text-gray-500" : "text-gray-500"
+                }`}
+              >
+                <p className="font-medium">Examples:</p>
+                <div className="flex flex-col gap-1 items-center">
+                  <span>📍 "Yonge and Dundas"</span>
+                  <span>📍 "123 Main Street"</span>
+                  <span>📍 "Queen & Spadina"</span>
+                  <span>📍 "Bloor at Bathurst"</span>
+                </div>
+              </div>
+            </div>
+            <form onSubmit={handleManualLocationSubmit} className="space-y-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={manualLocationInput}
+                  onChange={(e) => setManualLocationInput(e.target.value)}
+                  placeholder="e.g., Yonge and Dundas, or 123 Main St"
+                  className={`w-full px-4 py-3 pr-10 rounded-xl border-2 outline-none transition-all duration-300 ${
+                    darkMode
+                      ? "border-gray-600 bg-gray-700 text-gray-100 placeholder-gray-400 focus:border-indigo-400"
+                      : "border-indigo-200 bg-white text-gray-900 placeholder-gray-500 focus:border-indigo-500"
+                  }`}
+                  autoFocus
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <svg
+                    className={`w-5 h-5 ${
+                      darkMode ? "text-gray-400" : "text-gray-400"
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div
+                className={`text-xs px-2 ${
+                  darkMode ? "text-gray-500" : "text-gray-500"
+                }`}
+              >
+                <p>💡 Tip: You can use "and", "&", "/", or "at" for intersections</p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowManualLocation(false);
+                    setManualLocationInput("");
+                  }}
+                  className={`flex-1 py-3 rounded-xl font-medium transition-all duration-300 ease-out active:scale-95 ${
+                    darkMode
+                      ? "bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-gray-200"
+                      : "bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-700"
+                  }`}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!manualLocationInput.trim() || isGeocoding}
+                  className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl font-medium transition-all duration-300 ease-out hover:shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isGeocoding ? "Finding..." : "Find Location"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -1,25 +1,33 @@
-import React, { useState } from "react";
-import { Resource } from "../types";
+import React, { useState, useEffect } from "react";
+import { Resource, Coordinate } from "../types";
+import { isEstablishmentSaved, addSavedEstablishment, removeSavedEstablishment, getCurrentUser } from "../services/authService";
+import { getLatestUpdate } from "../services/communityUpdateService";
 
 interface ResourceCardProps {
   resource: Resource;
   isSelected: boolean;
   onClick: () => void;
+  userLocation?: Coordinate;
 }
 
 const ResourceCard: React.FC<ResourceCardProps> = ({
   resource,
   isSelected,
   onClick,
+  userLocation,
 }) => {
   const [showContribute, setShowContribute] = useState(false);
   const [crowdStatus, setCrowdStatus] = useState<"busy" | "light" | null>(null);
-  const [isSaved, setIsSaved] = useState(() => {
-    const saved = localStorage.getItem("savedResources");
-    if (!saved) return false;
-    const savedList = JSON.parse(saved);
-    return savedList.some((r: Resource) => r.id === resource.id);
-  });
+  const [isSaved, setIsSaved] = useState(() => isEstablishmentSaved(resource.id));
+  const [latestUpdate, setLatestUpdate] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check for latest community update
+    const update = getLatestUpdate(resource.id);
+    if (update) {
+      setLatestUpdate(update.content);
+    }
+  }, [resource.id]);
 
   const handleCrowdReport = (status: "busy" | "light") => {
     setCrowdStatus(status);
@@ -35,19 +43,29 @@ const ResourceCard: React.FC<ResourceCardProps> = ({
 
   const toggleSave = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const saved = localStorage.getItem("savedResources");
-    let savedList: Resource[] = saved ? JSON.parse(saved) : [];
-
-    if (isSaved) {
-      savedList = savedList.filter((r) => r.id !== resource.id);
-    } else {
-      savedList.push(resource);
+    
+    const user = getCurrentUser();
+    if (!user) {
+      const email = prompt("Please sign in to save locations. Enter your email:");
+      if (email) {
+        import("../services/authService").then(({ signIn }) => {
+          signIn(email).then(() => {
+            addSavedEstablishment(resource.id);
+            setIsSaved(true);
+            window.dispatchEvent(new Event("savedResourcesChanged"));
+          });
+        });
+      }
+      return;
     }
 
-    localStorage.setItem("savedResources", JSON.stringify(savedList));
+    if (isSaved) {
+      removeSavedEstablishment(resource.id);
+    } else {
+      addSavedEstablishment(resource.id);
+    }
+    
     setIsSaved(!isSaved);
-
-    // Trigger custom event for other components to update
     window.dispatchEvent(new Event("savedResourcesChanged"));
   };
 
@@ -124,6 +142,13 @@ const ResourceCard: React.FC<ResourceCardProps> = ({
       <p className="text-sm text-slate-600 mt-2 leading-snug">
         {resource.description}
       </p>
+      
+      {latestUpdate && (
+        <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-xs font-semibold text-blue-800 mb-1">Latest Community Update:</p>
+          <p className="text-xs text-blue-700">{latestUpdate}</p>
+        </div>
+      )}
 
       <div className="mt-3 flex flex-col gap-1 text-sm text-slate-500">
         <div className="flex items-center gap-2">
@@ -193,7 +218,22 @@ const ResourceCard: React.FC<ResourceCardProps> = ({
       {isSelected && (
         <>
           <a
-            href={`https://www.google.com/maps/dir/?api=1&destination=${resource.lat},${resource.lng}`}
+            href={(() => {
+              // Use place_id if available (most accurate - goes to exact establishment)
+              if (resource.placeId) {
+                return userLocation
+                  ? `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination_place_id=${resource.placeId}`
+                  : `https://www.google.com/maps/dir/?api=1&destination_place_id=${resource.placeId}`;
+              }
+              
+              // Fall back to address for better accuracy than coordinates alone
+              // Google Maps will geocode the address to the exact location
+              const encodedAddress = encodeURIComponent(resource.address || `${resource.name}, Toronto, ON`);
+              if (userLocation) {
+                return `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${encodedAddress}`;
+              }
+              return `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+            })()}
             target="_blank"
             rel="noreferrer"
             className="mt-4 block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-colors shadow-sm"

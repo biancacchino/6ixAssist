@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { Resource, AIResponse } from "../types";
-import { STATIC_RESOURCES } from "../constants";
+import { fetchAllEstablishments, establishmentToResource } from "./establishmentService";
 
 // Initialize the client
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -12,8 +12,12 @@ export const searchResourcesWithGemini = async (
 ): Promise<AIResponse> => {
   
   try {
+    // Fetch real establishments from all sources
+    const establishments = await fetchAllEstablishments();
+    const resources = establishments.map(establishmentToResource);
+    
     // Prepare resource data for the prompt
-    const resourceDataString = JSON.stringify(STATIC_RESOURCES.map(r => ({
+    const resourceDataString = JSON.stringify(resources.map(r => ({
       id: r.id,
       name: r.name,
       category: r.category,
@@ -92,14 +96,14 @@ export const searchResourcesWithGemini = async (
 
     const parsed = JSON.parse(responseText);
     
-    // Map back to full resource objects from our constant data
+    // Map back to full resource objects from fetched establishments
     const matchedResources = parsed.resources.map((r: any) => {
-      const original = STATIC_RESOURCES.find(sr => sr.id === r.id);
+      const original = resources.find(sr => sr.id === r.id);
       if (original) {
         // Append distance info to the description for the UI
         return { 
             ...original, 
-            description: `${original.description} (${r.distance_km} away)` 
+            description: `${original.description} (${r.distance_km || 'nearby'} away)` 
         };
       }
       return null;
@@ -113,15 +117,29 @@ export const searchResourcesWithGemini = async (
   } catch (error) {
     console.error("Gemini API Error:", error);
     // Fallback: Return basic filtering if AI fails
-    const fallback = STATIC_RESOURCES.filter(r => 
-      r.category.includes(userQuery.toLowerCase()) || 
-      r.description.toLowerCase().includes(userQuery.toLowerCase()) ||
-      (userQuery.toLowerCase().includes('emergency') && r.isEmergency)
-    );
-    return {
-      summary: "We're experiencing heavy traffic. Here are some relevant resources based on keywords.",
-      resources: fallback.length > 0 ? fallback : STATIC_RESOURCES.slice(0, 3)
-    };
+    try {
+      const establishments = await fetchAllEstablishments();
+      const allResources = establishments.map(establishmentToResource);
+      const lowerQuery = userQuery.toLowerCase();
+      
+      const fallback = allResources.filter(r => 
+        r.category.toLowerCase().includes(lowerQuery) || 
+        r.description?.toLowerCase().includes(lowerQuery) ||
+        r.name.toLowerCase().includes(lowerQuery) ||
+        (lowerQuery.includes('emergency') && r.isEmergency)
+      );
+      
+      return {
+        summary: "We're experiencing heavy traffic. Here are some relevant resources based on keywords.",
+        resources: fallback.length > 0 ? fallback.slice(0, 10) : allResources.slice(0, 5)
+      };
+    } catch (fallbackError) {
+      console.error("Fallback also failed:", fallbackError);
+      return {
+        summary: "Unable to process your request right now. Please try again later.",
+        resources: []
+      };
+    }
   }
 };
 

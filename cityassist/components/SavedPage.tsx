@@ -1,24 +1,48 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Resource } from "../types";
+import { Resource, Establishment } from "../types";
 import { DarkModeContext } from "../App";
+import { getCurrentUser, removeSavedEstablishment } from "../services/authService";
+import { fetchAllEstablishments, establishmentToResource } from "../services/establishmentService";
 
 const SavedPage: React.FC = () => {
   const { darkMode } = useContext(DarkModeContext);
   const [savedResources, setSavedResources] = useState<Resource[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadSavedResources = () => {
-      const saved = localStorage.getItem("savedResources");
-      if (saved) {
-        setSavedResources(JSON.parse(saved));
+    const loadSavedResources = async () => {
+      setIsLoading(true);
+      const user = getCurrentUser();
+      
+      if (!user) {
+        setSavedResources([]);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // Fetch all establishments
+        const allEstablishments = await fetchAllEstablishments();
+        
+        // Filter to only saved ones
+        const saved = allEstablishments
+          .filter(est => user.savedEstablishments.includes(est.id))
+          .map(est => establishmentToResource(est));
+        
+        setSavedResources(saved);
+      } catch (error) {
+        console.error('Error loading saved resources:', error);
+        setSavedResources([]);
+      } finally {
+        setIsLoading(false);
       }
     };
+
     loadSavedResources();
 
     // Listen for storage changes
     const handleStorageChange = () => loadSavedResources();
     window.addEventListener("storage", handleStorageChange);
-    // Also listen for custom event for same-tab updates
     window.addEventListener("savedResourcesChanged", handleStorageChange);
 
     return () => {
@@ -28,15 +52,8 @@ const SavedPage: React.FC = () => {
   }, []);
 
   const handleUnsave = (resourceId: string) => {
-    const saved = localStorage.getItem("savedResources");
-    if (!saved) return;
-
-    const savedList: Resource[] = JSON.parse(saved);
-    const updated = savedList.filter((r) => r.id !== resourceId);
-    localStorage.setItem("savedResources", JSON.stringify(updated));
-    setSavedResources(updated);
-
-    // Trigger custom event for other components
+    removeSavedEstablishment(resourceId);
+    setSavedResources(prev => prev.filter(r => r.id !== resourceId));
     window.dispatchEvent(new Event("savedResourcesChanged"));
   };
 
@@ -133,7 +150,14 @@ const SavedPage: React.FC = () => {
           </p>
         </div>
 
-        {savedResources.length > 0 ? (
+        {isLoading ? (
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+            <p className={`mt-4 transition-colors duration-300 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+              Loading saved places...
+            </p>
+          </div>
+        ) : savedResources.length > 0 ? (
           <div className="space-y-4">
             {savedResources.map((resource) => (
               <div

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Resource, Coordinate, AIResponse } from "../types";
-import { STATIC_RESOURCES } from "../constants";
+// Removed STATIC_RESOURCES import - all data now fetched dynamically
 import { searchResourcesWithGemini } from "../services/geminiService";
 import {
   getQuickAnswer,
@@ -12,6 +12,12 @@ import {
   getNearbyResources,
   LiveResource,
 } from "../services/torontoDataService";
+import {
+  fetchAllEstablishments,
+  searchEstablishments,
+  getNearbyEstablishments,
+  establishmentToResource,
+} from "../services/establishmentService";
 import MapComponent from "./MapComponent";
 import ResourceCard from "./ResourceCard";
 import EmergencyBanner from "./EmergencyBanner";
@@ -20,9 +26,10 @@ import { DarkModeContext } from "../App";
 
 interface ResultsPageProps {
   userLocation: Coordinate;
+  onLocationUpdate?: (location: Coordinate, neighborhood: string) => void;
 }
 
-const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
+const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation, onLocationUpdate }) => {
   const { darkMode } = useContext(DarkModeContext);
   // Manual query parsing from hash
   const getQueryFromHash = () => {
@@ -116,21 +123,21 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
     };
   };
 
-  // Load initial live resources
+  // Load initial live resources - use new establishment service
   useEffect(() => {
     const loadLiveResources = async () => {
       try {
         setLoading(true);
-        const liveData = await fetchAllLiveResources();
-        setLiveResources(liveData);
-        const convertedResources = liveData.map(convertLiveResourceToResource);
+        // Use the new establishment service
+        const establishments = await fetchAllEstablishments();
+        const convertedResources = establishments.map(establishmentToResource);
         setResources(convertedResources);
-        setSummary(`Showing ${liveData.length} live Toronto resources`);
+        setSummary(`Showing ${establishments.length} real Toronto support locations`);
       } catch (error) {
         console.error("Error loading live resources:", error);
-        // Fallback to static resources
-        setResources(STATIC_RESOURCES);
-        setSummary("Showing fallback resources (live data unavailable)");
+        // No fallback - show empty state if data unavailable
+        setResources([]);
+        setSummary("Unable to load resources. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -164,23 +171,20 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
       setShowEmergencyBanner(isCrisisQuery(searchQuery));
 
       try {
-        // First try searching live resources
-        const liveResults = await searchLiveResources(undefined, searchQuery);
-
-        if (liveResults.length > 0) {
-          setLiveResources(liveResults);
-          const convertedResources = liveResults.map(
-            convertLiveResourceToResource
-          );
+        // Use new establishment service for search
+        const establishments = await searchEstablishments(searchQuery);
+        
+        if (establishments.length > 0) {
+          const convertedResources = establishments.map(establishmentToResource);
           setResources(convertedResources);
           setSummary(
-            `Found ${liveResults.length} live resources matching "${searchQuery}"`
+            `Found ${establishments.length} real locations matching "${searchQuery}"`
           );
           if (convertedResources.length > 0) {
             setSelectedId(convertedResources[0].id);
           }
         } else {
-          // Fallback to AI search if no live results
+          // Fallback to AI search if no results
           const result: AIResponse = await searchResourcesWithGemini(
             searchQuery,
             userLocation.lat,
@@ -198,8 +202,8 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
         setSummary(
           "Sorry, we couldn't process your request right now. Try browsing all resources."
         );
-        const allLive = await fetchAllLiveResources();
-        const converted = allLive.map(convertLiveResourceToResource);
+        const allEstablishments = await fetchAllEstablishments();
+        const converted = allEstablishments.map(establishmentToResource);
         setResources(converted);
       } finally {
         setLoading(false);
@@ -485,6 +489,7 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
                 resource={resource}
                 isSelected={resource.id === selectedId}
                 onClick={() => setSelectedId(resource.id)}
+                userLocation={userLocation}
               />
             ))
           )}
@@ -502,6 +507,15 @@ const ResultsPage: React.FC<ResultsPageProps> = ({ userLocation }) => {
           center={userLocation}
           selectedId={selectedId}
           onSelectResource={setSelectedId}
+          onLocationUpdate={(location, neighborhood) => {
+            console.log('MapComponent called onLocationUpdate:', { location, neighborhood });
+            if (onLocationUpdate) {
+              console.log('ResultsPage forwarding to App onLocationUpdate');
+              onLocationUpdate(location, neighborhood);
+            } else {
+              console.warn('ResultsPage: onLocationUpdate prop is not available');
+            }
+          }}
         />
 
         {/* Mobile Map Controls */}

@@ -45,6 +45,9 @@ const App: React.FC = () => {
     const saved = localStorage.getItem("darkMode");
     return saved === "true" ? true : false; // Default to light mode
   });
+  const [showManualLocationInput, setShowManualLocationInput] = useState(false);
+  const [manualLocationInput, setManualLocationInput] = useState("");
+  const [isGeocoding, setIsGeocoding] = useState(false);
 
   const locationService = new LiveLocationService();
 
@@ -147,6 +150,56 @@ const App: React.FC = () => {
     setLocationPermission("denied");
   };
 
+  const handleManualLocationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!manualLocationInput.trim()) return;
+
+    setIsGeocoding(true);
+    try {
+      const { geocode } = await import("./services/geocodingService");
+      const coordinates = await geocode(manualLocationInput.trim());
+      
+      if (coordinates) {
+        setUserLocation(coordinates);
+        setLocationAccuracy(100); // Approximate accuracy for geocoded addresses
+        setIsLocationLive(true);
+        
+        // Get neighborhood
+        try {
+          const neighborhoodName = await LiveLocationService.getNeighborhood(
+            coordinates.lat,
+            coordinates.lng
+          );
+          setNeighborhood(neighborhoodName);
+        } catch (error) {
+          console.warn("Error getting neighborhood:", error);
+          setNeighborhood("Toronto"); // Fallback
+        }
+        
+        setShowManualLocationInput(false);
+        setShowLocationPrompt(false);
+        setManualLocationInput("");
+      } else {
+        alert(
+          "Could not find that location. Please try:\n" +
+          "• A more specific address (e.g., '123 Main Street')\n" +
+          "• A well-known intersection (e.g., 'Yonge and Dundas')\n" +
+          "• A neighborhood name (e.g., 'Downtown Toronto')"
+        );
+      }
+    } catch (error) {
+      console.error("Error geocoding:", error);
+      alert(
+        "Error finding location. Please check your internet connection and try again.\n\n" +
+        "You can also try:\n" +
+        "• Using the 'Detect Location' button\n" +
+        "• Dropping a pin on the map"
+      );
+    } finally {
+      setIsGeocoding(false);
+    }
+  };
+
   // Listen for hash changes to handle routing
   useEffect(() => {
     const handleHashChange = () => {
@@ -174,7 +227,7 @@ const App: React.FC = () => {
         }`}
       >
         {/* Location Permission Popup */}
-        {showLocationPrompt && (
+        {showLocationPrompt && !showManualLocationInput && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6">
             <div
               className={`rounded-3xl p-8 max-w-md w-full transition-colors duration-300 ${
@@ -232,17 +285,137 @@ const App: React.FC = () => {
                     Enable location
                   </button>
                   <button
-                    onClick={handleSkipLocation}
+                    onClick={() => setShowManualLocationInput(true)}
                     className={`w-full py-4 rounded-xl font-medium transition-all duration-300 ease-out active:scale-95 ${
                       darkMode
                         ? "bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-gray-200"
                         : "bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-700"
                     }`}
                   >
+                    Enter address or intersection
+                  </button>
+                  <button
+                    onClick={handleSkipLocation}
+                    className={`w-full py-3 rounded-xl font-medium transition-all duration-300 ease-out active:scale-95 text-sm ${
+                      darkMode
+                        ? "text-gray-400 hover:text-gray-300"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
                     Skip for now
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Manual Location Input */}
+        {showManualLocationInput && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6">
+            <div
+              className={`rounded-3xl p-8 max-w-md w-full transition-colors duration-300 ${
+                darkMode ? "bg-gray-800" : "bg-white"
+              }`}
+            >
+            <div className="text-center mb-6">
+              <h2
+                className={`text-2xl font-semibold mb-3 transition-colors duration-300 ${
+                  darkMode ? "text-gray-100" : "text-gray-900"
+                }`}
+              >
+                Enter your location
+              </h2>
+              <p
+                className={`text-sm transition-colors duration-300 mb-2 ${
+                  darkMode ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
+                Enter an address or intersection
+              </p>
+              <div
+                className={`text-xs space-y-1 mt-3 ${
+                  darkMode ? "text-gray-500" : "text-gray-500"
+                }`}
+              >
+                <p className="font-medium">Examples:</p>
+                <div className="flex flex-col gap-1 items-center">
+                  <span>📍 "Yonge and Dundas"</span>
+                  <span>📍 "123 Main Street"</span>
+                  <span>📍 "Queen & Spadina"</span>
+                  <span>📍 "Bloor at Bathurst"</span>
+                </div>
+              </div>
+            </div>
+            <form onSubmit={handleManualLocationSubmit} className="space-y-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={manualLocationInput}
+                  onChange={(e) => setManualLocationInput(e.target.value)}
+                  placeholder="e.g., Yonge and Dundas, or 123 Main St"
+                  className={`w-full px-4 py-3 pr-10 rounded-xl border-2 outline-none transition-all duration-300 ${
+                    darkMode
+                      ? "border-gray-600 bg-gray-700 text-gray-100 placeholder-gray-400 focus:border-indigo-400"
+                      : "border-indigo-200 bg-white text-gray-900 placeholder-gray-500 focus:border-indigo-500"
+                  }`}
+                  autoFocus
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <svg
+                    className={`w-5 h-5 ${
+                      darkMode ? "text-gray-400" : "text-gray-400"
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div
+                className={`text-xs px-2 ${
+                  darkMode ? "text-gray-500" : "text-gray-500"
+                }`}
+              >
+                <p>💡 Tip: You can use "and", "&", "/", or "at" for intersections</p>
+              </div>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowManualLocationInput(false);
+                      setManualLocationInput("");
+                    }}
+                    className={`flex-1 py-3 rounded-xl font-medium transition-all duration-300 ease-out active:scale-95 ${
+                      darkMode
+                        ? "bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-gray-200"
+                        : "bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-700"
+                    }`}
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!manualLocationInput.trim() || isGeocoding}
+                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl font-medium transition-all duration-300 ease-out hover:shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isGeocoding ? "Finding..." : "Find Location"}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
@@ -257,7 +430,15 @@ const App: React.FC = () => {
 
           <div className="flex-1 overflow-hidden">
             {isMap ? (
-              <ResultsPage userLocation={userLocation} />
+              <ResultsPage 
+                userLocation={userLocation}
+                onLocationUpdate={(location, neighborhoodName) => {
+                  setUserLocation(location);
+                  setNeighborhood(neighborhoodName);
+                  setIsLocationLive(true);
+                  setLocationAccuracy(100);
+                }}
+              />
             ) : isCommunity ? (
               <CommunityPage />
             ) : isSaved ? (
@@ -276,6 +457,12 @@ const App: React.FC = () => {
                 neighborhood={neighborhood}
                 isLocationLive={isLocationLive}
                 locationAccuracy={locationAccuracy}
+                onLocationUpdate={(location, neighborhoodName) => {
+                  setUserLocation(location);
+                  setNeighborhood(neighborhoodName);
+                  setIsLocationLive(true);
+                  setLocationAccuracy(100);
+                }}
               />
             )}
           </div>
